@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xiaomi Region 1 — Store Mapping</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root {
+    --bg: #f0f4f8;
+    --surface: #ffffff;
+    --border: #dde3ec;
+    --accent: #ff6900;
+    --text: #1a202c;
+    --muted: #718096;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  header {
+    padding: 11px 20px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+    z-index: 1000;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+
+  .logo { display: flex; align-items: center; gap: 10px; }
+
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: 14px; color: white;
+  }
+
+  .logo-text {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600; font-size: 16px; color: var(--text);
+  }
+  .logo-text span { color: var(--accent); }
+
+  .region-badge {
+    background: var(--accent);
+    color: white;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  .legend {
+    display: flex; gap: 14px; align-items: center;
+    margin-left: 16px; padding-left: 16px;
+    border-left: 1px solid var(--border);
+  }
+
+  .legend-item {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--muted); font-weight: 500;
+  }
+
+  .legend-dot {
+    width: 13px; height: 13px;
+    border-radius: 50%; border: 2px solid rgba(0,0,0,0.15);
+    flex-shrink: 0;
+  }
+
+  .legend-diamond {
+    width: 13px; height: 13px;
+    transform: rotate(45deg);
+    border: 2px solid rgba(0,0,0,0.15);
+    flex-shrink: 0;
+  }
+
+  .header-right { display: flex; align-items: center; gap: 16px; margin-left: auto; }
+
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: 18px; color: var(--accent); line-height: 1;
+  }
+  .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  #map { flex: 1; width: 100%; }
+
+  /* Popup */
+  .leaflet-popup-content-wrapper {
+    background: #ffffff !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
+    padding: 0 !important;
+  }
+  .leaflet-popup-tip { background: #ffffff !important; }
+  .leaflet-popup-content { margin: 0 !important; }
+
+  .popup-inner { padding: 14px 16px; min-width: 210px; }
+
+  .popup-type-badge {
+    display: inline-block;
+    font-size: 9px; font-weight: 700;
+    padding: 2px 7px; border-radius: 10px;
+    margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  .popup-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600; font-size: 14px; color: #1a202c;
+    line-height: 1.3; margin-bottom: 6px;
+  }
+
+  .popup-rating { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+  .popup-score { font-weight: 700; font-size: 13px; }
+  .popup-count { font-size: 11px; color: var(--muted); }
+
+  .popup-address {
+    font-size: 11px; color: var(--muted); line-height: 1.4;
+    border-top: 1px solid var(--border); padding-top: 8px;
+  }
+
+  .popup-potential-note {
+    font-size: 11px; color: #92400e; line-height: 1.4;
+    background: #fff7ed; border-radius: 6px;
+    padding: 7px 9px; margin-top: 8px;
+    border: 1px solid #fed7aa;
+  }
+
+  .leaflet-popup-close-button {
+    color: var(--muted) !important; font-size: 16px !important;
+    top: 8px !important; right: 10px !important;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">Mi</div>
+    <div class="logo-text">Xiaomi <span>Store Locator</span></div>
+  </div>
+  <div class="region-badge">REGION 1</div>
+
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#16a34a"></div>
+      <span>Rating 5.0</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#65a30d"></div>
+      <span>Rating 4.9</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#ca8a04"></div>
+      <span>Rating 4.8</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#ea580c"></div>
+      <span>Rating ≤4.7</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-diamond" style="background:#8b5cf6; border-color:#6d28d9"></div>
+      <span>Potential Location</span>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <div class="stat">
+      <div class="stat-num">21</div>
+      <div class="stat-label">Active Stores</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">8</div>
+      <div class="stat-label">Potential Sites</div>
+    </div>
+  </div>
+</header>
+
+<div id="map"></div>
+
+<script>
+// ── Region 1 Active Stores ────────────────────────────────────────────────────
+const activeStores = [
+  { name: "Gandaria City",              lat: -6.244231, lng: 106.783423, rating: 4.9, count: 2406, address: "Jl. Sultan Iskandar Muda, Jakarta Selatan" },
+  { name: "Botani Square Bogor",        lat: -6.60216,  lng: 106.806926, rating: 4.9, count: 2728, address: "Jl. Raya Pajajaran No.40, Bogor" },
+  { name: "Trans Studio Mall Cibubur",  lat: -6.375336, lng: 106.901782, rating: 4.9, count: 1048, address: "Trans Studio Mall Cibubur Lt. 2, Depok" },
+  { name: "Cibinong City Mall",         lat: -6.484359, lng: 106.841885, rating: 4.9, count: 631,  address: "Jl. Tegar Beriman No.1, Cibinong, Bogor" },
+  { name: "Summarecon Mall Bekasi",     lat: -6.225096, lng: 107.001793, rating: 4.7, count: 3895, address: "Jl. Boulevard Ahmad Yani, Bekasi Utara" },
+  { name: "AEON Mall Jakarta Garden City", lat: -6.171702, lng: 106.952195, rating: 4.9, count: 2064, address: "Jl. Jakarta Garden City Blvd No.1, Jakarta Timur" },
+  { name: "The Park Sawangan",          lat: -6.376048, lng: 106.745033, rating: 4.9, count: 1321, address: "Jl. Raya Parung - Ciputat No.1, Depok" },
+  { name: "Mall Kelapa Gading",         lat: -6.157909, lng: 106.907812, rating: 4.8, count: 2516, address: "Jl. Boulevard Raya No.13, Jakarta Utara" },
+  { name: "Emporium Pluit Mall",        lat: -6.127385, lng: 106.790861, rating: 4.7, count: 1454, address: "Jl. Pluit Selatan Raya No.37, Jakarta Utara" },
+  { name: "Grand Metropolitan Mall Bekasi", lat: -6.249345, lng: 106.9841, rating: 5.0, count: 1604, address: "Pekayon Jaya, Bekasi Selatan" },
+  { name: "AEON Mall Tanjung Barat",    lat: -6.30561,  lng: 106.839957, rating: 4.9, count: 698,  address: "Jl. Raya Tanjung Barat No.163, Jakarta Selatan" },
+  { name: "Metropolitan Mall Cileungsi",lat: -6.398721, lng: 106.97589,  rating: 4.9, count: 1321, address: "Jl. Metland, Cileungsi, Bogor" },
+  { name: "Pakuwon Mall Bekasi",        lat: -6.255754, lng: 106.990244, rating: 4.9, count: 240,  address: "Jl. Raya Pekayon No.002, Bekasi Selatan" },
+  { name: "Mall Artha Gading",          lat: -6.146095, lng: 106.892555, rating: 5.0, count: 1178, address: "Jl. Permata Artha Gading No.1, Jakarta Utara" },
+  { name: "Margo City Depok",           lat: -6.373016, lng: 106.834682, rating: 4.9, count: 1478, address: "Margo City Depok, Lt. 2, Depok" },
+  { name: "Arion Mall Jakarta Timur",   lat: -6.193898, lng: 106.890673, rating: 5.0, count: 2,    address: "Jl. Pemuda No.3-4, Rawamangun, Jakarta Timur" },
+  { name: "Living World Cibubur",       lat: -6.369514, lng: 106.958858, rating: 4.9, count: 83,   address: "Jl. Boulevard Kota Wisata No.32B, Cibubur, Bogor" },
+  { name: "Lippo Plaza Kramat Jati",    lat: -6.270613, lng: 106.868543, rating: 5.0, count: 5,    address: "Jl. Raya Jakarta-Bogor Km 19, Kramat Jati, Jakarta Timur" },
+  { name: "Living Plaza Jababeka",      lat: -6.3200,   lng: 107.1500,   rating: 4.9, count: 120,  address: "Kawasan Industri Jababeka, Cikarang, Bekasi" },
+  { name: "Av. Kelapa Dua Depok",       lat: -6.3800,   lng: 106.8200,   rating: 4.9, count: 95,   address: "Jl. Kelapa Dua Raya, Depok" },
+  { name: "Plaza Pondok Gede",          lat: -6.2800,   lng: 106.9300,   rating: 4.9, count: 310,  address: "Jl. Raya Pondok Gede, Bekasi" },
+];
+
+// ── Potential Locations ───────────────────────────────────────────────────────
+const potentialLocations = [
+  {
+    name: "Raya Industri Marthadinata SGC",
+    lat: -6.310,  lng: 107.155,
+    address: "Jl. Raya Industri Marthadinata, SGC Cikarang",
+    type: "Street",
+    note: "High-traffic industrial corridor in Cikarang. Strong purchasing power from factory & residential catchment."
+  },
+  {
+    name: "Bulevard Hijau Harapan Indah",
+    lat: -6.173,  lng: 106.982,
+    address: "Bulevard Hijau, Harapan Indah, Bekasi",
+    type: "Street",
+    note: "Upscale township boulevard in Harapan Indah. Growing middle-upper residential cluster with underserved retail."
+  },
+  {
+    name: "RA Kartini Bekasi",
+    lat: -6.245,  lng: 106.993,
+    address: "Jl. RA Kartini, Bekasi Selatan",
+    type: "Street",
+    note: "Key arterial road in Bekasi Selatan. Dense commercial strip, high daily footfall."
+  },
+  {
+    name: "Stellar Avenue Grand Kota Bintang",
+    lat: -6.252,  lng: 107.007,
+    address: "Stellar Avenue, Grand Kota Bintang, Bekasi",
+    type: "Mall",
+    note: "Premium lifestyle destination in Grand Kota Bintang. Young affluent Bekasi residents, strong tech-consumer profile."
+  },
+  {
+    name: "Jababeka Residence Street",
+    lat: -6.335,  lng: 107.160,
+    address: "Jl. Utama Jababeka Residence, Cikarang",
+    type: "Street",
+    note: "Main street of Jababeka residential township. Large expat & professional community in Cikarang."
+  },
+  {
+    name: "Ruko Jl. Sudirman Bogor",
+    lat: -6.592,  lng: 106.799,
+    address: "Jl. Jenderal Sudirman, Bogor Tengah",
+    type: "Street",
+    note: "Prime Bogor city center commercial strip. High visibility, strong brand presence opportunity."
+  },
+  {
+    name: "Shila at Sawangan",
+    lat: -6.410,  lng: 106.740,
+    address: "Shila at Sawangan, Depok",
+    type: "Township",
+    note: "New premium township in Sawangan corridor. Fast-growing upper-middle catchment, complements The Park Sawangan."
+  },
+  {
+    name: "Meikarta District 1",
+    lat: -6.345,  lng: 107.175,
+    address: "Meikarta District 1, Cikarang Selatan, Bekasi",
+    type: "Township",
+    note: "Massive mixed-use superblock in Cikarang. High-density residential & commercial, significant untapped volume."
+  },
+];
+
+// ── Color helpers ─────────────────────────────────────────────────────────[...]
+function getRatingColor(rating) {
+  if (rating >= 5.0) return '#16a34a';
+  if (rating >= 4.9) return '#65a30d';
+  if (rating >= 4.8) return '#ca8a04';
+  return '#ea580c';
+}
+
+function getStars(rating) {
+  const full = Math.floor(rating);
+  const half = rating % 1 >= 0.5 ? 1 : 0;
+  return '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(5 - full - half);
+}
+
+// ── Active store icon (circle dot) ───────────────────────────────────────────
+function createDotIcon(rating) {
+  const color = getRatingColor(rating);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+    <circle cx="10" cy="10" r="8" fill="${color}" stroke="white" stroke-width="2.5"/>
+  </svg>`;
+  return L.divIcon({ html: svg, className: '', iconSize: [20,20], iconAnchor: [10,10], popupAnchor: [0,-13] });
+}
+
+// ── Potential location icon (diamond) ─────────────────────────────────────────
+function createDiamondIcon() {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
+    <rect x="4" y="4" width="14" height="14" rx="2" fill="#8b5cf6" stroke="white" stroke-width="2.2" transform="rotate(45 11 11)"/>
+  </svg>`;
+  return L.divIcon({ html: svg, className: '', iconSize: [22,22], iconAnchor: [11,11], popupAnchor: [0,-14] });
+}
+
+// ── Map init ────────────────────────────────────────────────────────────
+const map = L.map('map', { center: [-6.32, 106.92], zoom: 10 });
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  attribution: '© OpenStreetMap © CartoDB',
+  subdomains: 'abcd', maxZoom: 19
+}).addTo(map);
+
+// ── Plot active stores ───────────────────────────────────────────────────────
+activeStores.forEach(store => {
+  const color = getRatingColor(store.rating);
+  const marker = L.marker([store.lat, store.lng], { icon: createDotIcon(store.rating) }).addTo(map);
+
+  marker.bindPopup(`
+    <div class="popup-inner">
+      <div><span class="popup-type-badge" style="background:#dcfce7;color:#166534;">✓ Active — REG 1</span></div>
+      <div class="popup-name">${store.name}</div>
+      <div class="popup-rating">
+        <span style="color:${color};font-size:12px">${getStars(store.rating)}</span>
+        <span class="popup-score" style="color:${color}">${store.rating.toFixed(1)}</span>
+        <span class="popup-count">(${store.count.toLocaleString()} reviews)</span>
+      </div>
+      <div class="popup-address">${store.address}</div>
+    </div>`, { maxWidth: 270 });
+});
+
+// ── Plot potential locations ──────────────────────────────────────────────────
+const typeColors = { "Street": "#7c3aed", "Mall": "#6d28d9", "Township": "#5b21b6" };
+
+potentialLocations.forEach(loc => {
+  const marker = L.marker([loc.lat, loc.lng], { icon: createDiamondIcon() }).addTo(map);
+
+  marker.bindPopup(`
+    <div class="popup-inner">
+      <div><span class="popup-type-badge" style="background:#ede9fe;color:#5b21b6;">◆ Potential — ${loc.type}</span></div>
+      <div class="popup-name">${loc.name}</div>
+      <div class="popup-address">${loc.address}</div>
+      <div class="popup-potential-note">💡 ${loc.note}</div>
+    </div>`, { maxWidth: 280 });
+});
+</script>
+</body>
+</html>
