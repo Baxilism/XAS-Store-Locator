@@ -3,337 +3,287 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Xiaomi Authorized Stores — Jabodetabek & Banten</title>
+<title>Xiaomi Authorized Store Locator</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
-  :root {
-    --bg: #f0f4f8;
-    --surface: #ffffff;
-    --border: #dde3ec;
-    --accent: #ff6900;
-    --accent2: #f59e0b;
-    --text: #1a202c;
-    --muted: #718096;
-    --green: #16a34a;
-    --lime: #65a30d;
-    --yellow: #ca8a04;
-    --orange: #ea580c;
-  }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
+  
   body {
     font-family: 'Inter', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    background: linear-gradient(135deg, #f0f4f8 0%, #e8eef5 100%);
+    color: #1a202c;
+    min-height: 100vh;
+    padding: 20px;
   }
-
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
   header {
-    padding: 12px 20px;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex-shrink: 0;
-    z-index: 1000;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    text-align: center;
+    margin-bottom: 50px;
   }
-
+  
   .logo {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 15px;
   }
-
+  
   .logo-icon {
-    width: 32px;
-    height: 32px;
-    background: var(--accent);
-    border-radius: 6px;
+    width: 48px;
+    height: 48px;
+    background: #ff6900;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: 'Rajdhani', sans-serif;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 20px;
     color: white;
-    letter-spacing: -0.5px;
   }
-
-  .logo-text {
+  
+  h1 {
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 600;
-    font-size: 16px;
-    color: var(--text);
-    letter-spacing: 0.5px;
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 10px;
   }
-
-  .logo-text span { color: var(--accent); }
-
-  .header-stats {
-    display: flex;
-    gap: 20px;
-    margin-left: auto;
+  
+  h1 span {
+    color: #ff6900;
   }
-
-  .stat { text-align: center; }
-
-  .stat-num {
+  
+  .subtitle {
+    font-size: 18px;
+    color: #718096;
+    margin-bottom: 30px;
+  }
+  
+  .regions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-bottom: 50px;
+  }
+  
+  .region-card {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+    transition: all 0.3s ease;
+    border: 1px solid #dde3ec;
+  }
+  
+  .region-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 20px rgba(0,0,0,0.12);
+  }
+  
+  .region-badge {
+    display: inline-block;
+    background: #ff6900;
+    color: white;
     font-family: 'Rajdhani', sans-serif;
     font-weight: 700;
-    font-size: 18px;
-    color: var(--accent);
-    line-height: 1;
-  }
-
-  .stat-label {
-    font-size: 10px;
-    color: var(--muted);
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-bottom: 15px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
-
-  .legend {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    margin-left: 20px;
-    padding-left: 20px;
-    border-left: 1px solid var(--border);
+  
+  .region-card h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #1a202c;
   }
-
+  
+  .region-stats {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0;
+  }
+  
+  .stat {
+    flex: 1;
+  }
+  
+  .stat-num {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #ff6900;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  
+  .stat-label {
+    font-size: 12px;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .region-description {
+    font-size: 14px;
+    color: #718096;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  
+  .region-link {
+    display: inline-block;
+    background: #ff6900;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    transition: background 0.3s ease;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .region-link:hover {
+    background: #e55d00;
+  }
+  
+  footer {
+    text-align: center;
+    padding: 30px 0;
+    border-top: 1px solid #dde3ec;
+    color: #718096;
+    font-size: 14px;
+  }
+  
+  footer a {
+    color: #ff6900;
+    text-decoration: none;
+  }
+  
+  footer a:hover {
+    text-decoration: underline;
+  }
+  
+  .legend {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 30px;
+    border: 1px solid #dde3ec;
+  }
+  
+  .legend h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  
+  .legend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  
   .legend-item {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    color: var(--muted);
-    font-weight: 500;
+    gap: 10px;
+    font-size: 13px;
   }
-
+  
   .legend-dot {
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    border: 2px solid rgba(0,0,0,0.15);
+    flex-shrink: 0;
   }
-
-  #map { flex: 1; width: 100%; }
-
-  .leaflet-popup-content-wrapper {
-    background: #ffffff !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 10px !important;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
-    padding: 0 !important;
-  }
-
-  .leaflet-popup-tip { background: #ffffff !important; }
-  .leaflet-popup-content { margin: 0 !important; }
-
-  .popup-inner {
-    padding: 14px 16px;
-    min-width: 220px;
-  }
-
-  .popup-name {
-    font-family: 'Rajdhani', sans-serif;
-    font-weight: 600;
-    font-size: 14px;
-    color: #1a202c;
-    line-height: 1.3;
-    margin-bottom: 6px;
-  }
-
-  .popup-rating {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 8px;
-  }
-
-  .popup-score {
-    font-weight: 700;
-    font-size: 13px;
-  }
-
-  .popup-count {
-    font-size: 11px;
-    color: var(--muted);
-  }
-
-  .popup-address {
-    font-size: 11px;
-    color: var(--muted);
-    line-height: 1.4;
-    border-top: 1px solid var(--border);
-    padding-top: 8px;
-  }
-
-  .leaflet-popup-close-button {
-    color: var(--muted) !important;
-    font-size: 16px !important;
-    top: 8px !important;
-    right: 10px !important;
+  
+  .legend-diamond {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    transform: rotate(45deg);
   }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">
-    <div class="logo-icon">Mi</div>
-    <div class="logo-text">Xiaomi <span>Store Locator</span></div>
-  </div>
-  <div class="legend">
-    <div class="legend-item">
-      <div class="legend-dot" style="background:#16a34a"></div>
-      <span>5.0</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-dot" style="background:#65a30d"></div>
-      <span>4.9</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-dot" style="background:#ca8a04"></div>
-      <span>4.8</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-dot" style="background:#ea580c"></div>
-      <span>≤4.7</span>
-    </div>
-  </div>
-  <div class="header-stats">
-    <div class="stat">
-      <div class="stat-num">45</div>
-      <div class="stat-label">Stores</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num" id="avg-rating">—</div>
-      <div class="stat-label">Avg Rating</div>
-    </div>
-  </div>
-</header>
-
-<div id="map"></div>
-
-<script>
-const stores = [
-  { name: "Gajah Mada Plaza", lat: -6.16084, lng: 106.818022, rating: 5.0, count: 90, address: "Jl. Gajah Mada No.19, Jakarta Pusat" },
-  { name: "Green Pramuka Square", lat: -6.190135, lng: 106.874023, rating: 5.0, count: 252, address: "Jl. Jenderal Ahmad Yani No.49, Jakarta Pusat" },
-  { name: "Emporium Pluit Mall", lat: -6.127385, lng: 106.790861, rating: 4.7, count: 1454, address: "Jl. Pluit Selatan Raya No.37, Jakarta Utara" },
-  { name: "Mall Artha Gading", lat: -6.146095, lng: 106.892555, rating: 5.0, count: 1178, address: "Jl. Permata Artha Gading No.1, Jakarta Utara" },
-  { name: "Mall Taman Anggrek", lat: -6.178583, lng: 106.792213, rating: 4.9, count: 33, address: "Letjen S. Parman St, Jakarta Barat" },
-  { name: "Puri Indah Mall", lat: -6.186854, lng: 106.733761, rating: 4.9, count: 134, address: "Jl. Puri Agung, Jakarta Barat" },
-  { name: "Semper / Kramat Jaya", lat: -6.12266, lng: 106.916658, rating: 5.0, count: 34, address: "Jl. Kramat Jaya Raya, Jakarta Utara" },
-  { name: "Central Park Mall", lat: -6.177705, lng: 106.791344, rating: 4.8, count: 559, address: "Jl. Letjen S. Parman No.Kav. 28, Jakarta Barat" },
-  { name: "Lippo Mall St. Moritz", lat: -6.187638, lng: 106.739602, rating: 4.9, count: 430, address: "Jl. Puri Indah Raya Blok U 1, Jakarta Barat" },
-  { name: "Mall Menara Jakarta", lat: -6.150131, lng: 106.846934, rating: 5.0, count: 135, address: "Jl. Kota Baru Bandar Kemayoran, Jakarta Pusat" },
-  { name: "AEON Mall Jakarta Garden City", lat: -6.171702, lng: 106.952195, rating: 4.9, count: 2064, address: "Jl. Jakarta Garden City Blvd No.1, Jakarta Timur" },
-  { name: "Grand Metropolitan Mall Bekasi", lat: -6.249345, lng: 106.9841, rating: 5.0, count: 1604, address: "Pekayon Jaya, Bekasi Selatan" },
-  { name: "Mall Kelapa Gading", lat: -6.157909, lng: 106.907812, rating: 4.8, count: 2516, address: "Jl. Boulevard Raya No.13, Jakarta Utara" },
-  { name: "Metropolitan Mall Cileungsi", lat: -6.398721, lng: 106.97589, rating: 4.9, count: 1321, address: "Jl. Metland, Cileungsi, Bogor" },
-  { name: "Pakuwon Mall Bekasi", lat: -6.255754, lng: 106.990244, rating: 4.9, count: 240, address: "Jl. Raya Pekayon No.002, Bekasi Selatan" },
-  { name: "Summarecon Mall Bekasi", lat: -6.225096, lng: 107.001793, rating: 4.7, count: 3895, address: "Jl. Boulevard Ahmad Yani, Bekasi Utara" },
-  { name: "Lippo Mall Cikarang", lat: -6.334303, lng: 107.136497, rating: 5.0, count: 134, address: "Lippo Mall Cikarang, Jl. MH. Thamrin, Bekasi" },
-  { name: "Mall of Serang", lat: -6.11897, lng: 106.182168, rating: 4.9, count: 554, address: "Jl. Ahmad Yani Lt. 1, Serang, Banten" },
-  { name: "AEON Mall BSD City", lat: -6.304422, lng: 106.644017, rating: 4.9, count: 590, address: "Jl. BSD Raya Utama, Tangerang" },
-  { name: "Bintaro Jaya Xchange Mall 1", lat: -6.285764, lng: 106.727994, rating: 4.9, count: 2293, address: "Bintaro Jaya Xchange Mall Sektor VII, Tangerang" },
-  { name: "Cilegon Center Mall", lat: -6.023986, lng: 106.06992, rating: 4.8, count: 985, address: "Jl. Ahmad Yani, Cilegon, Banten" },
-  { name: "Bintaro Plaza", lat: -6.272486, lng: 106.74159, rating: 5.0, count: 58, address: "Plaza Bintaro Jaya Lt. 2, Tangerang Selatan" },
-  { name: "AEON Mall Tanjung Barat", lat: -6.30561, lng: 106.839957, rating: 4.9, count: 698, address: "Jl. Raya Tanjung Barat No.163, Jakarta Selatan" },
-  { name: "Arion Mall Jakarta Timur", lat: -6.193898, lng: 106.890673, rating: 5.0, count: 2, address: "Jl. Pemuda No.3-4, Rawamangun, Jakarta Timur" },
-  { name: "Gandaria City", lat: -6.244231, lng: 106.783423, rating: 4.9, count: 2406, address: "Jl. Sultan Iskandar Muda, Jakarta Selatan" },
-  { name: "Grand Indonesia", lat: -6.195939, lng: 106.821832, rating: 4.9, count: 604, address: "Jl. M.H. Thamrin No.1, Jakarta Pusat" },
-  { name: "Lotte Mall (Ciputra World)", lat: -6.224851, lng: 106.823827, rating: 5.0, count: 95, address: "Lotte Mall Jakarta Lt. 2F, Jl. Prof. DR. Satrio" },
-  { name: "Mall Ambassador", lat: -6.22388, lng: 106.826738, rating: 5.0, count: 55, address: "Mall Ambassador GF, Jl. Prof. DR. Satrio, Jakarta Selatan" },
-  { name: "Tangcity Mall Tangerang", lat: -6.193946, lng: 106.6336, rating: 4.8, count: 780, address: "Jl. Jenderal Sudirman, Tangerang" },
-  { name: "E-Center Supermall Karawaci", lat: -6.225945, lng: 106.606243, rating: 4.8, count: 1038, address: "Jl. Boulevard Diponegoro No.105, Tangerang" },
-  { name: "Living World Alam Sutera", lat: -6.244336, lng: 106.653522, rating: 4.9, count: 775, address: "Jl. Nn No.37, Pakulonan, Tangerang Selatan" },
-  { name: "Mall Ciputra Tangerang", lat: -6.260531, lng: 106.52473, rating: 4.9, count: 1172, address: "Jl. Citra Raya Boulevard, Tangerang" },
-  { name: "Mall Matahari Daan Mogot", lat: -6.154183, lng: 106.694613, rating: 5.0, count: 1, address: "Matahari Mall, Jl. Daan Mogot No.24, Jakarta Barat" },
-  { name: "Summarecon Mall Serpong", lat: -6.240821, lng: 106.628431, rating: 4.6, count: 1504, address: "Summarecon Mall Serpong 1, Gading Serpong, Tangerang" },
-  { name: "Botani Square Bogor", lat: -6.60216, lng: 106.806926, rating: 4.9, count: 2728, address: "Jl. Raya Pajajaran No.40, Bogor" },
-  { name: "Cibinong City Mall", lat: -6.484359, lng: 106.841885, rating: 4.9, count: 631, address: "Jl. Tegar Beriman No.1, Cibinong, Bogor" },
-  { name: "Margo City Depok", lat: -6.373016, lng: 106.834682, rating: 4.9, count: 1478, address: "Margo City Depok, Lt. 2, Depok" },
-  { name: "The Park Sawangan Depok", lat: -6.376048, lng: 106.745033, rating: 4.9, count: 1321, address: "Jl. Raya Parung - Ciputat No.1, Depok" },
-  { name: "Trans Studio Mall Cibubur", lat: -6.375336, lng: 106.901782, rating: 4.9, count: 1048, address: "Trans Studio Mall Cibubur Lt. 2, Depok" },
-  { name: "Lippo Plaza Ekalokasari Bogor", lat: -6.621648, lng: 106.817658, rating: 5.0, count: 108, address: "Lippo Plaza Ekalokasari Lt. GF, Jl. Siliwangi No.123, Bogor" },
-  { name: "Living World Kota Wisata Cibubur", lat: -6.369514, lng: 106.958858, rating: 4.9, count: 83, address: "Jl. Boulevard Kota Wisata No.32B, Cibubur, Bogor" },
-  { name: "Mal Ciputra Bekasi (Cibubur)", lat: -6.38308, lng: 106.925743, rating: 5.0, count: 128, address: "Jl. Alternatif Cibubur No.38, Bekasi" },
-  { name: "Plaza Jambu 2 Bogor", lat: -6.569174, lng: 106.807989, rating: 4.9, count: 383, address: "Plaza Jambu Dua Lt. 1, Bantarjati, Bogor" },
-  { name: "Lippo Plaza Kramat Jati", lat: -6.270613, lng: 106.868543, rating: 5.0, count: 5, address: "Jl. Raya Jakarta-Bogor No.Km 19, Kramat Jati, Jakarta Timur" },
-  { name: "Erajaya Digital Complex PIK", lat: -6.046932, lng: 106.702948, rating: 5.0, count: 352, address: "Jl. MH Tamrin, PIK 2, Tangerang" }
-];
-
-function getRatingColor(rating) {
-  if (rating >= 5.0) return '#16a34a';
-  if (rating >= 4.9) return '#65a30d';
-  if (rating >= 4.8) return '#ca8a04';
-  return '#ea580c';
-}
-
-function createDotIcon(rating) {
-  const color = getRatingColor(rating);
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
-      <circle cx="10" cy="10" r="8" fill="${color}" stroke="white" stroke-width="2.5"/>
-    </svg>`;
-  return L.divIcon({
-    html: svg,
-    className: '',
-    iconSize: [20, 20],
-    iconAnchor: [10, 10],
-    popupAnchor: [0, -12]
-  });
-}
-
-function getStars(rating) {
-  return '★'.repeat(Math.floor(rating)) + (rating % 1 >= 0.5 ? '½' : '') + '☆'.repeat(5 - Math.floor(rating) - (rating % 1 >= 0.5 ? 1 : 0));
-}
-
-const map = L.map('map', {
-  center: [-6.25, 106.82],
-  zoom: 10,
-  zoomControl: true
-});
-
-// Bright light tile
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-  attribution: '© OpenStreetMap © CartoDB',
-  subdomains: 'abcd',
-  maxZoom: 19
-}).addTo(map);
-
-let totalRating = 0;
-stores.forEach(store => {
-  totalRating += store.rating;
-  const icon = createDotIcon(store.rating);
-  const color = getRatingColor(store.rating);
-  const marker = L.marker([store.lat, store.lng], { icon }).addTo(map);
-
-  const popupHTML = `
-    <div class="popup-inner">
-      <div class="popup-name">${store.name}</div>
-      <div class="popup-rating">
-        <span style="color:${color};font-size:13px">${getStars(store.rating)}</span>
-        <span class="popup-score" style="color:${color}">${store.rating.toFixed(1)}</span>
-        <span class="popup-count">(${store.count.toLocaleString()} reviews)</span>
+<div class="container">
+  <header>
+    <div class="logo">
+      <div class="logo-icon">Mi</div>
+      <div>
+        <h1>Xiaomi <span>Store Locator</span></h1>
       </div>
-      <div class="popup-address">${store.address}</div>
-    </div>`;
+    </div>
+    <p class="subtitle">Interactive maps of authorized Xiaomi store locations and expansion opportunities</p>
+  </header>
 
-  marker.bindPopup(popupHTML, { maxWidth: 280 });
-});
+  <div class="legend">
+    <h3>🗺️ Map Legend</h3>
+    <div class="legend-grid">
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#16a34a"></div>
+        <span>Rating 5.0 (Excellent)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#65a30d"></div>
+        <span>Rating 4.9 (Very Good)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#ca8a04"></div>
+        <span>Rating 4.8 (Good)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#ea580c"></div>
+        <span>Rating ≤4.7 (Fair)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-diamond" style="background:#8b5cf6"></div>
+        <span>Potential Location</span>
+      </div>
+    </div>
+  </div>
 
-document.getElementById('avg-rating').textContent = (totalRating / stores.length).toFixed(2);
-</script>
+  <div class="regions-grid">
+    <div class="region-card">
+      <div class="region-badge">Region 1</div>
+      <h2>Jakarta, Bogor, Depok & Bekasi</h2>
+      <div class="region-stats">
+        <div class="stat">
+          <div class="stat-num">21</div>
+          <div class="stat-label">Active Stores</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">8</div>
+          <div class="stat-label">Potential Sites</div>
+        </div>
+      </div>
+      <p class="region-description">
+        Explore all Xiaomi authorized stores in the Greater Jakarta area with real-time ratings, customer reviews, and identified expansion opportunities.
+      </p>
+      <a href="regions/Region1.html" class="region-link">View Map →</a>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2026 Xiaomi Authorized Store Locator | Last updated: 2026-05-19</p>
+    <p>For more information, visit <a href="https://github.com/Baxilism/XAS-Store-Locator">GitHub Repository</a></p>
+  </footer>
+</div>
+
 </body>
 </html>
