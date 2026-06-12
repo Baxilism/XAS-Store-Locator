@@ -124,6 +124,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;heigh
 .leg-item:last-child{margin-bottom:0;}
 .leg-pin{width:10px;height:10px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);flex-shrink:0;}
 .leg-ring{width:10px;height:10px;border-radius:50%;border:2px solid;flex-shrink:0;}
+
+.map-marker {
+  filter: drop-shadow(0 3px 8px rgba(0,0,0,0.5)) !important;
+}
 </style>
 </head>
 <body>
@@ -348,12 +352,14 @@ function eraCol(c){return c>=900?'#EF4444':c>=600?'#F97316':'#EAB308';}
 
 function mkXIcon(s){
   const c=s.type==='active'?'#FF6900':'#F59E0B';
-  return L.divIcon({html:`<svg viewBox="0 0 24 32" width="24" height="32" xmlns="http://www.w3.org/2000/svg"><defs><filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.4"/></filter></defs><path d="M12 0C5.4 0 0 5.4 0 12c0 8 12 20 12 20s12-12 12-20c0-6.6-5.4-12-12-12z" fill="${c}" filter="url(#shadow)"/><circle cx="12" cy="12" r="4" fill="white"/></svg>`,iconSize:[24,32],iconAnchor:[12,32],className:'map-marker'});
+  const html=`<svg width="40" height="48" viewBox="0 0 40 48" xmlns="http://www.w3.org/2000/svg"><path d="M20 2C9 2 0 11 0 22c0 14 20 26 20 26s20-12 20-26c0-11-9-20-20-20z" fill="${c}"/><circle cx="20" cy="22" r="8" fill="white" opacity="0.9"/></svg>`;
+  return L.divIcon({html,iconSize:[40,48],iconAnchor:[20,48],className:'map-marker'});
 }
 
 function mkEIcon(e){
   const c=eraCol(e.capa);
-  return L.divIcon({html:`<svg viewBox="0 0 24 32" width="24" height="32" xmlns="http://www.w3.org/2000/svg"><defs><filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.4"/></filter></defs><path d="M12 0C5.4 0 0 5.4 0 12c0 8 12 20 12 20s12-12 12-20c0-6.6-5.4-12-12-12z" fill="${c}" filter="url(#shadow)"/><circle cx="12" cy="12" r="4" fill="white"/></svg>`,iconSize:[24,32],iconAnchor:[12,32],className:'map-marker'});
+  const html=`<svg width="40" height="48" viewBox="0 0 40 48" xmlns="http://www.w3.org/2000/svg"><path d="M20 2C9 2 0 11 0 22c0 14 20 26 20 26s20-12 20-26c0-11-9-20-20-20z" fill="${c}"/><circle cx="20" cy="22" r="8" fill="white" opacity="0.9"/></svg>`;
+  return L.divIcon({html,iconSize:[40,48],iconAnchor:[20,48],className:'map-marker'});
 }
 
 function xPop(s){const c=s.type==='active'?'var(--orange)':'var(--construction)';const l=s.type==='active'?'✅ Active Store':'🔨 Under Construction';const ps=s.type==='active'?'ps-active':'ps-construction';return `<div class="pu"><div class="pu-tag" style="color:${c==='var(--orange)'?'#FF6900':'#F59E0B'}">${l}</div><div class="pu-name">${s.name}</div><div class="pu-area">${s.area}</div><div class="pu-row"><div class="pu-lbl">Coordinates:</div><div class="pu-val">${s.lat.toFixed(4)}, ${s.lng.toFixed(4)}</div></div><div class="pu-status ${ps}"><div class="pdot"></div>${l}</div></div>`;}
