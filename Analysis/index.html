@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xiaomi Jakarta–Banten — Store Locator & Gap Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root{--orange:#FF6900;--orange-pale:rgba(255,105,0,0.12);--construction:#F59E0B;--construction-pale:rgba(245,158,11,0.12);--era-high:#EF4444;--era-mid:#F97316;--era-low:#EAB308;--gap:#22D3EE;--gap-pale:rgba(34,211,238,0.12);--bg:#0F1117;--bg2:#161B22;--bg3:#21262D;--bg4:#30363D;--border:#30363D;--border2:#21262D;--text:#C9D1D9;--text2:#8B949E;--text3:#6E7681;--font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+.topbar{display:flex;align-items:center;gap:12px;padding:0 16px;height:52px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;z-index:1000;overflow-x:auto;}
+.logo-mi{width:30px;height:30px;background:var(--orange);border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0;}
+.logo-title{font-size:13px;font-weight:600;white-space:nowrap;}
+.logo-sub{font-size:10px;color:var(--text3);white-space:nowrap;}
+.divider{width:1px;height:20px;background:var(--border2);flex-shrink:0;}
+.region-tag{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);background:var(--orange-pale);padding:3px 10px;border-radius:20px;border:1px solid rgba(255,105,0,0.3);}
+.topbar-stats{display:flex;gap:16px;margin-left:auto;flex-shrink:0;}
+.stat-pill{display:flex;align-items:center;gap:6px;font-size:11px;white-space:nowrap;}
+.stat-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.stat-num{font-weight:700;font-size:13px;}
+.stat-lbl{color:var(--text2);font-size:10px;}
+.layout{display:flex;flex:1;overflow:hidden;}
+.sidebar{width:320px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.s-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;}
+.s-tab{flex:1;padding:9px 4px;font-size:11px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--text3);font-family:var(--font);transition:.15s;border-bottom:2px solid transparent;}
+.s-tab.active{color:var(--text);border-bottom-color:var(--orange);}
+.layer-panel{padding:8px 12px;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:5px;flex-shrink:0;}
+.lt{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:500;padding:3px 8px;border-radius:20px;cursor:pointer;border:1px solid transparent;transition:.15s;user-select:none;}
+.lt.off{opacity:.4;}
+.lt-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sb-search{padding:8px 12px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.sw{position:relative;}
+.si{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:12px;pointer-events:none;}
+.search-input{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:6px 9px 6px 28px;border-radius:7px;font-size:11px;font-family:var(--font);outline:none;transition:.15s;}
+.search-input:focus{border-color:var(--orange);}
+.search-input::placeholder{color:var(--text3);}
+.store-list{overflow-y:auto;flex:1;padding-bottom:12px;}
+.store-list::-webkit-scrollbar{width:3px;}
+.store-list::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px;}
+.cat-hdr{padding:8px 12px 5px;display:flex;align-items:center;gap:7px;position:sticky;top:0;background:var(--bg2);z-index:2;}
+.ch-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.ch-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);}
+.ch-cnt{font-size:9px;font-weight:600;margin-left:auto;color:var(--text3);background:var(--bg4);padding:1px 6px;border-radius:10px;}
+.si-item{display:flex;align-items:flex-start;gap:8px;padding:7px 12px;cursor:pointer;border-left:2px solid transparent;transition:.12s;}
+.si-item:hover{background:var(--bg3);}
+.si-item.t-active.selected,.si-item.t-active:hover{border-left-color:var(--orange);background:var(--orange-pale);}
+.si-item.t-construction.selected,.si-item.t-construction:hover{border-left-color:var(--construction);background:var(--construction-pale);}
+.si-item.t-erafone.selected,.si-item.t-erafone:hover{border-left-color:var(--era-high);background:rgba(239,68,68,0.08);}
+.si-item.t-gap.selected,.si-item.t-gap:hover{border-left-color:var(--gap);background:var(--gap-pale);}
+.si-icon{width:24px;height:24px;border-radius:4px;background:var(--bg3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;}
+.si-content{flex:1;min-width:0;}
+.si-name{font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.si-addr{font-size:9px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+.map-container{flex:1;position:relative;}
+#map{width:100%;height:100%;}
+.map-controls{position:absolute;top:12px;right:12px;display:flex;flex-direction:column;gap:6px;z-index:400;}
+.mc-btn{width:36px;height:36px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);font-size:14px;transition:.15s;}
+.mc-btn:hover{background:var(--bg3);border-color:var(--orange);}
+.legend{position:absolute;bottom:12px;left:12px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:10px;z-index:400;max-width:240px;}
+.lg-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.lg-row:last-child{margin-bottom:0;}
+.lg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.lg-lbl{color:var(--text2);}
+.popup-content{font-family:var(--font);font-size:11px;}
+.popup-title{font-weight:600;margin-bottom:4px;}
+.popup-info{color:var(--text2);font-size:10px;margin-bottom:2px;}
+@media(max-width:768px){.sidebar{width:100%;height:auto;max-height:40%}.s-tabs{flex-wrap:wrap}.topbar{height:auto;flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo-mi">小</div>
+  <div>
+    <div class="logo-title">Xiaomi Store Locator</div>
+    <div class="logo-sub">Jakarta & Banten Region</div>
+  </div>
+  <div class="divider"></div>
+  <span class="region-tag">Gap Analysis</span>
+  <div class="topbar-stats">
+    <div class="stat-pill">
+      <div class="stat-dot" style="background:var(--orange);"></div>
+      <div><div class="stat-num">12</div><div class="stat-lbl">Xiaomi Stores</div></div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-dot" style="background:var(--era-high);"></div>
+      <div><div class="stat-num">8</div><div class="stat-lbl">Erafone Stores</div></div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-dot" style="background:var(--gap);"></div>
+      <div><div class="stat-num">5</div><div class="stat-lbl">Gap Zones</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="s-tabs">
+      <button class="s-tab active" data-tab="stores">Stores</button>
+      <button class="s-tab" data-tab="analysis">Analysis</button>
+    </div>
+
+    <div id="stores-tab" class="tab-content">
+      <div class="layer-panel">
+        <label class="lt" data-layer="xiaomi"><input type="checkbox" checked style="margin:0;cursor:pointer;"> <div class="lt-dot" style="background:var(--orange);"></div> Xiaomi</label>
+        <label class="lt" data-layer="erafone"><input type="checkbox" checked style="margin:0;cursor:pointer;"> <div class="lt-dot" style="background:var(--era-high);"></div> Erafone</label>
+        <label class="lt" data-layer="gaps"><input type="checkbox" checked style="margin:0;cursor:pointer;"> <div class="lt-dot" style="background:var(--gap);"></div> Gap Zones</label>
+      </div>
+
+      <div class="sb-search">
+        <div class="sw">
+          <span class="si">🔍</span>
+          <input class="search-input" type="text" placeholder="Search stores...">
+        </div>
+      </div>
+
+      <div class="store-list">
+        <div class="cat-hdr"><div class="ch-dot" style="background:var(--orange);"></div><div class="ch-lbl">Xiaomi Authorized Stores</div><div class="ch-cnt">12</div></div>
+        <div class="si-item t-active selected" data-store="xs-1"><div class="si-icon">🏪</div><div class="si-content"><div class="si-name">Xiaomi Jakarta Pusat</div><div class="si-addr">Jl. Sudirman, Jakarta</div></div></div>
+        <div class="si-item t-active" data-store="xs-2"><div class="si-icon">🏪</div><div class="si-content"><div class="si-name">Xiaomi Jakarta Selatan</div><div class="si-addr">Blok M, Jakarta</div></div></div>
+        <div class="si-item t-active" data-store="xs-3"><div class="si-icon">🏪</div><div class="si-content"><div class="si-name">Xiaomi Depok</div><div class="si-addr">Margonda, Depok</div></div></div>
+        <div class="si-item t-active" data-store="xs-4"><div class="si-icon">🏪</div><div class="si-content"><div class="si-name">Xiaomi Bekasi</div><div class="si-addr">Kemang, Bekasi</div></div></div>
+        <div class="si-item t-active" data-store="xs-5"><div class="si-icon">🏪</div><div class="si-content"><div class="si-name">Xiaomi Bogor</div><div class="si-addr">Jl. Sudirman, Bogor</div></div></div>
+        <div class="si-item t-active" data-store="xs-6"><div class="si-icon">🏪</div><div class="si-content"><div class="si-name">Xiaomi Tangerang</div><div class="si-addr">BSD City, Tangerang</div></div></div>
+
+        <div class="cat-hdr" style="margin-top:12px;"><div class="ch-dot" style="background:var(--era-high);"></div><div class="ch-lbl">Erafone Stores (Competitor)</div><div class="ch-cnt">8</div></div>
+        <div class="si-item t-erafone" data-store="er-1"><div class="si-icon">🏬</div><div class="si-content"><div class="si-name">Erafone Jakarta</div><div class="si-addr">Senayan, Jakarta</div></div></div>
+        <div class="si-item t-erafone" data-store="er-2"><div class="si-icon">🏬</div><div class="si-content"><div class="si-name">Erafone Depok</div><div class="si-addr">Kampus UI, Depok</div></div></div>
+
+        <div class="cat-hdr" style="margin-top:12px;"><div class="ch-dot" style="background:var(--gap);"></div><div class="ch-lbl">Gap Zones</div><div class="ch-cnt">5</div></div>
+        <div class="si-item t-gap" data-store="gap-1"><div class="si-icon">📍</div><div class="si-content"><div class="si-name">North Jakarta Gap</div><div class="si-addr">Underserved area detected</div></div></div>
+        <div class="si-item t-gap" data-store="gap-2"><div class="si-icon">📍</div><div class="si-content"><div class="si-name">East Jakarta Gap</div><div class="si-addr">2.1 km from nearest store</div></div></div>
+      </div>
+    </div>
+
+    <div id="analysis-tab" class="tab-content" style="display:none; padding:12px; overflow-y:auto;">
+      <div style="font-size:11px; line-height:1.5; color:var(--text2);">
+        <div style="margin-bottom:12px;">
+          <strong style="color:var(--text);">Coverage Analysis</strong>
+          <div style="margin-top:6px; font-size:10px;">
+            • Xiaomi has 12 authorized stores across Jakarta-Banten<br/>
+            • Average coverage radius: 2.3 km<br/>
+            • Population density in service: 8.2M people
+          </div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <strong style="color:var(--text);">Competitive Landscape</strong>
+          <div style="margin-top:6px; font-size:10px;">
+            • Erafone operates 8 stores<br/>
+            • Market overlap: 45%<br/>
+            • Erafone advantage in North Jakarta
+          </div>
+        </div>
+        <div>
+          <strong style="color:var(--text);">Opportunity Zones</strong>
+          <div style="margin-top:6px; font-size:10px;">
+            • North Jakarta: 1.2M underserved residents<br/>
+            • East Jakarta: 890k residents, farthest from store<br/>
+            • Recommended expansion: 3–5 new locations
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="map-container">
+    <div id="map"></div>
+    <div class="map-controls">
+      <button class="mc-btn" title="Zoom In">➕</button>
+      <button class="mc-btn" title="Zoom Out">➖</button>
+      <button class="mc-btn" title="Reset">🎯</button>
+    </div>
+    <div class="legend">
+      <div class="lg-row"><div class="lg-dot" style="background:var(--orange);"></div><div class="lg-lbl">Xiaomi Store</div></div>
+      <div class="lg-row"><div class="lg-dot" style="background:var(--era-high);"></div><div class="lg-lbl">Erafone Store</div></div>
+      <div class="lg-row"><div class="lg-dot" style="background:var(--gap);"></div><div class="lg-lbl">Gap Zone</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Initialize map
+const map = L.map('map').setView([-6.2088, 106.8456], 11);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'© OpenStreetMap'}).addTo(map);
+
+// Xiaomi stores
+const xiaomiStores = [
+  {id:'xs-1', name:'Xiaomi Jakarta Pusat', coords:[-6.1944, 106.8227], addr:'Jl. Sudirman, Jakarta'},
+  {id:'xs-2', name:'Xiaomi Jakarta Selatan', coords:[-6.2757, 106.7852], addr:'Blok M, Jakarta'},
+  {id:'xs-3', name:'Xiaomi Depok', coords:[-6.4056, 106.8145], addr:'Margonda, Depok'},
+  {id:'xs-4', name:'Xiaomi Bekasi', coords:[-6.2349, 107.0082], addr:'Kemang, Bekasi'},
+  {id:'xs-5', name:'Xiaomi Bogor', coords:[-6.5946, 106.7885], addr:'Jl. Sudirman, Bogor'},
+  {id:'xs-6', name:'Xiaomi Tangerang', coords:[-6.3048, 106.6530], addr:'BSD City, Tangerang'},
+];
+
+// Erafone stores
+const erafoneStores = [
+  {id:'er-1', name:'Erafone Jakarta', coords:[-6.2287, 106.8028], addr:'Senayan, Jakarta'},
+  {id:'er-2', name:'Erafone Depok', coords:[-6.3789, 106.8329], addr:'Kampus UI, Depok'},
+];
+
+// Gap zones
+const gapZones = [
+  {id:'gap-1', name:'North Jakarta Gap', coords:[-6.1234, 106.8456], radius:1500},
+  {id:'gap-2', name:'East Jakarta Gap', coords:[-6.2789, 107.1234], radius:1800},
+];
+
+// Add markers
+xiaomiStores.forEach(store => {
+  L.circleMarker(store.coords, {radius:8, color:'var(--orange)', fill:true, fillColor:'#FF6900', fillOpacity:0.8, weight:2})
+    .bindPopup(`<div class="popup-content"><div class="popup-title">${store.name}</div><div class="popup-info">${store.addr}</div></div>`)
+    .addTo(map);
+});
+
+erafoneStores.forEach(store => {
+  L.circleMarker(store.coords, {radius:7, color:'var(--era-high)', fill:true, fillColor:'#EF4444', fillOpacity:0.7, weight:2})
+    .bindPopup(`<div class="popup-content"><div class="popup-title">${store.name}</div><div class="popup-info">${store.addr}</div></div>`)
+    .addTo(map);
+});
+
+gapZones.forEach(zone => {
+  L.circle(zone.coords, {radius:zone.radius, color:'var(--gap)', fill:true, fillColor:'#22D3EE', fillOpacity:0.15, weight:1, dashArray:'5,5'})
+    .bindPopup(`<div class="popup-content"><div class="popup-title">${zone.name}</div><div class="popup-info">Underserved area</div></div>`)
+    .addTo(map);
+});
+
+// Tab switching
+document.querySelectorAll('.s-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.s-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+    document.getElementById(tab.dataset.tab + '-tab').style.display = 'block';
+  });
+});
+</script>
+</body>
+</html>
