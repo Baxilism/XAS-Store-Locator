@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xiaomi Jakarta–Banten — Store Locator & Gap Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root{--orange:#FF6900;--orange-pale:rgba(255,105,0,0.12);--construction:#F59E0B;--construction-pale:rgba(245,158,11,0.12);--era-high:#EF4444;--era-mid:#F97316;--era-low:#EAB308;--gap:#22D3EE;--gap-pale:rgba(34,211,238,0.12);--green:#22C55E;--font:'Inter',sans-serif;--bg:#0F0F0F;--bg2:#1A1A1A;--bg3:#242424;--bg4:#303030;--text:#F0F0F0;--text2:#B0B0B0;--text3:#707070;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.12);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+.topbar{display:flex;align-items:center;gap:12px;padding:0 16px;height:52px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;z-index:1000;overflow-x:auto;}
+.logo-mi{width:30px;height:30px;background:var(--orange);border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0;}
+.logo-title{font-size:13px;font-weight:600;white-space:nowrap;}
+.logo-sub{font-size:10px;color:var(--text3);white-space:nowrap;}
+.divider{width:1px;height:20px;background:var(--border2);flex-shrink:0;}
+.region-tag{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);background:var(--orange-pale);padding:3px 10px;border-radius:20px;border:1px solid rgba(255,105,0,.2);flex-shrink:0;}
+.topbar-stats{display:flex;gap:16px;margin-left:auto;flex-shrink:0;}
+.stat-pill{display:flex;align-items:center;gap:6px;font-size:11px;white-space:nowrap;}
+.stat-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.stat-num{font-weight:700;font-size:13px;}
+.stat-lbl{color:var(--text2);font-size:10px;}
+.layout{display:flex;flex:1;overflow:hidden;}
+.sidebar{width:320px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.s-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;}
+.s-tab{flex:1;padding:9px 4px;font-size:11px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--text3);font-family:var(--font);transition:.15s;border-bottom:2px solid transparent;}
+.s-tab.active{color:var(--text);border-bottom-color:var(--orange);}
+.layer-panel{padding:8px 12px;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:5px;flex-shrink:0;}
+.lt{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:500;padding:3px 8px;border-radius:20px;cursor:pointer;border:1px solid transparent;transition:.15s;user-select:none;}
+.lt.off{opacity:.4;}
+.lt-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sb-search{padding:8px 12px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.sw{position:relative;}
+.si{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:12px;pointer-events:none;}
+.search-input{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:6px 9px 6px 28px;border-radius:7px;font-size:11px;font-family:var(--font);outline:none;transition:.15s;}
+.search-input:focus{border-color:var(--orange);}
+.search-input::placeholder{color:var(--text3);}
+.store-list{overflow-y:auto;flex:1;padding-bottom:12px;}
+.store-list::-webkit-scrollbar{width:3px;}
+.store-list::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px;}
+.cat-hdr{padding:8px 12px 5px;display:flex;align-items:center;gap:7px;position:sticky;top:0;background:var(--bg2);z-index:2;}
+.ch-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.ch-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);}
+.ch-cnt{font-size:9px;font-weight:600;margin-left:auto;color:var(--text3);background:var(--bg4);padding:1px 6px;border-radius:10px;}
+.si-item{display:flex;align-items:flex-start;gap:8px;padding:7px 12px;cursor:pointer;border-left:2px solid transparent;transition:.12s;}
+.si-item:hover{background:var(--bg3);}
+.si-item.t-active.selected,.si-item.t-active:hover{border-left-color:var(--orange);background:var(--orange-pale);}
+.si-item.t-construction.selected,.si-item.t-construction:hover{border-left-color:var(--construction);background:var(--construction-pale);}
+.si-item.t-erafone.selected,.si-item.t-erafone:hover{border-left-color:var(--era-high);background:rgba(239,68,68,.08);}
+.si-item.t-gap.selected,.si-item.t-gap:hover{border-left-color:var(--gap);background:var(--gap-pale);}
+.si-item.hidden{display:none;}
+.si-icon{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;margin-top:1px;}
+.si-info{flex:1;min-width:0;}
+.si-name{font-size:11px;font-weight:500;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.si-sub{font-size:10px;color:var(--text3);margin-top:1px;display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+.badge{font-size:9px;font-weight:600;padding:1px 5px;border-radius:3px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;}
+.b-active{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.2);}
+.b-construction{background:var(--construction-pale);color:var(--construction);border:1px solid rgba(245,158,11,.2);}
+.b-era{background:rgba(239,68,68,.12);color:var(--era-high);border:1px solid rgba(239,68,68,.2);}
+.b-gap{background:var(--gap-pale);color:var(--gap);border:1px solid rgba(34,211,238,.2);}
+.capa-row{margin-top:3px;display:flex;align-items:center;gap:5px;}
+.capa-bg{flex:1;height:3px;background:var(--bg4);border-radius:2px;}
+.capa-fill{height:3px;border-radius:2px;}
+.capa-num{font-size:9px;font-family:monospace;white-space:nowrap;}
+.sdiv{height:1px;background:var(--border);margin:5px 12px;}
+/* Gap panel */
+.gap-panel{overflow-y:auto;flex:1;padding-bottom:12px;}
+.gap-panel::-webkit-scrollbar{width:3px;}
+.gap-panel::-webkit-scrollbar-thumb{background:var(--bg4);}
+.gap-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;margin:4px 8px;overflow:hidden;}
+.gc-hdr{padding:9px 10px;display:flex;align-items:flex-start;gap:8px;cursor:pointer;}
+.gc-hdr:hover{background:var(--bg4);}
+.gc-rank{width:26px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;margin-top:1px;}
+.p-high{background:rgba(239,68,68,.2);color:var(--era-high);}
+.p-med{background:rgba(245,158,11,.2);color:var(--construction);}
+.gc-name{font-size:11px;font-weight:600;flex:1;line-height:1.3;}
+.gc-capa{font-size:11px;font-family:monospace;font-weight:700;white-space:nowrap;}
+.gc-body{padding:0 10px 9px;font-size:10px;color:var(--text2);display:none;}
+.gc-body.open{display:block;}
+.gc-row{display:flex;justify-content:space-between;margin-bottom:3px;}
+.gc-lbl{color:var(--text3);}
+.gc-val{font-weight:500;color:var(--text);}
+.gc-rec{background:var(--bg4);border-radius:5px;padding:6px 8px;margin-top:6px;font-size:10px;line-height:1.55;}
+.gc-rec strong{color:var(--gap);}
+/* Map */
+.map-wrap{flex:1;position:relative;overflow:hidden;}
+#map{width:100%;height:100%;}
+.leaflet-tile-pane{filter:brightness(.85) saturate(.7) hue-rotate(180deg) invert(1) contrast(.9) saturate(.5);}
+.leaflet-popup-content-wrapper{background:#1E1E1E!important;border:1px solid rgba(255,255,255,.1)!important;border-radius:10px!important;box-shadow:0 8px 32px rgba(0,0,0,.5)!important;color:#F0F0F0!important;padding:0!important;}
+.leaflet-popup-content{margin:0!important;min-width:210px;}
+.leaflet-popup-tip-container{display:none;}
+.leaflet-popup-close-button{color:#606060!important;font-size:18px!important;top:6px!important;right:10px!important;}
+.pu{padding:12px 14px;}
+.pu-tag{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;}
+.pu-name{font-size:12px;font-weight:600;line-height:1.4;margin-bottom:4px;}
+.pu-area{font-size:10px;color:#A0A0A0;margin-bottom:7px;}
+.pu-row{display:flex;justify-content:space-between;font-size:10px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.pu-row:last-of-type{border-bottom:none;}
+.pu-lbl{color:#707070;}
+.pu-val{font-weight:600;}
+.pu-status{display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:600;padding:3px 8px;border-radius:4px;margin-top:7px;}
+.ps-active{background:rgba(34,197,94,.12);color:#22C55E;border:1px solid rgba(34,197,94,.2);}
+.ps-construction{background:rgba(245,158,11,.12);color:#F59E0B;border:1px solid rgba(245,158,11,.2);}
+.ps-era{background:rgba(239,68,68,.12);color:#EF4444;border:1px solid rgba(239,68,68,.2);}
+.ps-gap{background:rgba(34,211,238,.1);color:#22D3EE;border:1px solid rgba(34,211,238,.2);}
+.pdot{width:5px;height:5px;border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+/* Overlays */
+.map-ov{position:absolute;top:10px;left:10px;z-index:800;display:flex;flex-direction:column;gap:5px;pointer-events:none;}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;background:rgba(15,15,15,.92);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:20px;font-size:10px;font-weight:600;pointer-events:auto;}
+.chip-num{font-size:13px;font-weight:700;color:var(--text);}
+.chip-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.radius-ctrl{position:absolute;bottom:16px;left:10px;z-index:800;background:rgba(15,15,15,.92);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:10px;padding:10px 12px;min-width:140px;font-size:10px;}
+.rc-title{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
+.rc-row{display:flex;align-items:center;gap:8px;}
+.rc-val{font-size:12px;font-weight:700;color:var(--gap);font-family:monospace;min-width:40px;}
+input[type=range]{-webkit-appearance:none;width:100px;height:3px;background:var(--bg4);border-radius:2px;outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--gap);cursor:pointer;}
+.legend{position:absolute;bottom:16px;right:12px;background:rgba(15,15,15,.92);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:10px;padding:10px 12px;z-index:800;min-width:170px;font-size:10px;}
+.leg-title{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:7px;}
+.leg-item{display:flex;align-items:center;gap:7px;font-size:10px;color:var(--text2);margin-bottom:5px;}
+.leg-item:last-child{margin-bottom:0;}
+.leg-pin{width:10px;height:10px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);flex-shrink:0;}
+.leg-ring{width:10px;height:10px;border-radius:50%;border:2px solid;flex-shrink:0;}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:9px;flex-shrink:0;">
+    <div class="logo-mi">Mi</div>
+    <div><div class="logo-title">Xiaomi Store Locator</div><div class="logo-sub">Jakarta–Banten · Gap Analysis</div></div>
+  </div>
+  <div class="divider"></div>
+  <div class="region-tag">JAKARTA NR</div>
+  <div class="topbar-stats">
+    <div class="stat-pill"><div class="stat-dot" style="background:var(--orange)"></div><span class="stat-num" id="cA">47</span><span class="stat-lbl">Active</span></div>
+    <div class="stat-pill"><div class="stat-dot" style="background:var(--construction)"></div><span class="stat-num" id="cC">19</span><span class="stat-lbl">Construction</span></div>
+    <div class="stat-pill"><div class="stat-dot" style="background:var(--era-high)"></div><span class="stat-num" id="cE">65</span><span class="stat-lbl">Erafone</span></div>
+    <div class="stat-pill"><div class="stat-dot" style="background:var(--gap)"></div><span class="stat-num" id="cG">0</span><span class="stat-lbl">Gap Zones</span></div>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="s-tabs">
+      <button class="s-tab active" onclick="showPanel('stores',this)">🏪 Stores</button>
+      <button class="s-tab" onclick="showPanel('erafone',this)">📶 Erafone</button>
+      <button class="s-tab" onclick="showPanel('gaps',this)">🎯 Gap Zones</button>
+    </div>
+    <div class="layer-panel">
+      <div class="lt on" id="lt-active" style="border-color:var(--orange);color:var(--orange);" onclick="toggleLayer('active')"><div class="lt-dot" style="background:var(--orange)"></div>Active</div>
+      <div class="lt on" id="lt-construction" style="border-color:var(--construction);color:var(--construction);" onclick="toggleLayer('construction')"><div class="lt-dot" style="background:var(--construction)"></div>Construction</div>
+      <div class="lt on" id="lt-erafone" style="border-color:var(--era-high);color:var(--era-high);" onclick="toggleLayer('erafone')"><div class="lt-dot" style="background:var(--era-high)"></div>Erafone</div>
+      <div class="lt on" id="lt-gaps" style="border-color:var(--gap);color:var(--gap);" onclick="toggleLayer('gaps')"><div class="lt-dot" style="background:var(--gap)"></div>Gap Zones</div>
+    </div>
+    <div class="sb-search">
+      <div class="sw"><span class="si">⌕</span><input class="search-input" type="text" placeholder="Search stores, areas…" id="srch" oninput="filterSearch(this.value)"></div>
+    </div>
+    <div id="panel-stores" class="store-list"></div>
+    <div id="panel-erafone" class="store-list" style="display:none;"></div>
+    <div id="panel-gaps" class="gap-panel" style="display:none;"></div>
+  </aside>
+
+  <div class="map-wrap">
+    <div id="map"></div>
+    <div class="map-ov">
+      <div class="chip"><div class="chip-dot" style="background:var(--orange)"></div><span class="chip-num">47</span><span>Active Stores</span></div>
+      <div class="chip"><div class="chip-dot" style="background:var(--construction)"></div><span class="chip-num">19</span><span>Under Construction</span></div>
+      <div class="chip"><div class="chip-dot" style="background:var(--era-high)"></div><span class="chip-num">65</span><span>Erafone Stores</span></div>
+      <div class="chip"><div class="chip-dot" style="background:var(--gap)"></div><span class="chip-num" id="mc-gap">0</span><span>Gap Zones</span></div>
+    </div>
+    <div class="radius-ctrl">
+      <div class="rc-title">Gap Search Radius</div>
+      <div class="rc-row">
+        <input type="range" min="1" max="10" value="3" step="0.5" id="radiusSlider" oninput="updateRadius(this.value)">
+        <span class="rc-val" id="rVal">3 km</span>
+      </div>
+    </div>
+    <div class="legend">
+      <div class="leg-title">Legend</div>
+      <div class="leg-item"><div class="leg-pin" style="background:var(--orange)"></div>Xiaomi Active</div>
+      <div class="leg-item"><div class="leg-pin" style="background:var(--construction)"></div>Under Construction</div>
+      <div class="leg-item"><div class="leg-pin" style="background:var(--era-high)"></div>Erafone ≥900</div>
+      <div class="leg-item"><div class="leg-pin" style="background:var(--era-mid)"></div>Erafone 600–899</div>
+      <div class="leg-item"><div class="leg-pin" style="background:var(--era-low)"></div>Erafone &lt;600</div>
+      <div class="leg-item"><div class="leg-ring" style="border-color:var(--gap)"></div>Gap Zone (no Xiaomi)</div>
+      <div class="leg-item"><div class="leg-ring" style="border-color:rgba(239,68,68,.5)"></div>Erafone Radius</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const XS=[
+  {id:1,name:"Plaza Jambu 2 Bogor",area:"Bogor",type:"active",lat:-6.5982,lng:106.7923},
+  {id:2,name:"Mall Ambassador Jakarta",area:"South East Jakarta",type:"active",lat:-6.2249,lng:106.840},
+  {id:3,name:"Central Park Mall Jakarta",area:"West Jakarta",type:"active",lat:-6.1779,lng:106.7908},
+  {id:4,name:"Gandaria City Jakarta",area:"South Jakarta",type:"active",lat:-6.244,lng:106.7801},
+  {id:5,name:"Lippo Mall ST Moritz Jakarta",area:"West Jakarta",type:"active",lat:-6.1832,lng:106.7535},
+  {id:6,name:"Botani Square Mall Bogor",area:"Bogor",type:"active",lat:-6.5881,lng:106.8018},
+  {id:7,name:"Trans Studio Mall Cibubur Depok",area:"East Jakarta",type:"active",lat:-6.3805,lng:106.9102},
+  {id:8,name:"Cibinong City Mall Cibinong",area:"Bogor",type:"active",lat:-6.5078,lng:106.8424},
+  {id:9,name:"Summarecon Mall Bekasi",area:"Bekasi",type:"active",lat:-6.2252,lng:107.0053},
+  {id:10,name:"Living World Alam Sutera Tangerang Selatan",area:"Tangerang Selatan",type:"active",lat:-6.2259,lng:106.6504},
+  {id:11,name:"AEON Mall BSD City Tangerang",area:"Tangerang Selatan",type:"active",lat:-6.3012,lng:106.6541},
+  {id:12,name:"AEON Mall Jakarta Garden City",area:"East Jakarta",type:"active",lat:-6.253,lng:106.978},
+  {id:13,name:"The Park Sawangan Depok",area:"Depok",type:"active",lat:-6.4198,lng:106.7382},
+  {id:14,name:"Bintaro Jaya Xchange Mall 1",area:"Tangerang Selatan",type:"active",lat:-6.2847,lng:106.6925},
+  {id:15,name:"E-Center Supermall Karawaci",area:"Tangerang",type:"active",lat:-6.1787,lng:106.6269},
+  {id:16,name:"Mall Kelapa Gading Jakarta",area:"North Jakarta",type:"active",lat:-6.1576,lng:106.9031},
+  {id:17,name:"Emporium Pluit Mall Jakarta",area:"North Jakarta",type:"active",lat:-6.1234,lng:106.7947},
+  {id:18,name:"Grand Metropolitan Mall Bekasi",area:"Bekasi",type:"active",lat:-6.2413,lng:107.0073},
+  {id:19,name:"AEON Mall Tanjung Barat Jakarta",area:"South Jakarta",type:"active",lat:-6.3185,lng:106.8252},
+  {id:20,name:"Cilegon Center Mall Cilegon",area:"Banten",type:"active",lat:-6.0025,lng:106.0461},
+  {id:21,name:"Metropolitan Mall Cileungsi Bogor",area:"Bekasi",type:"active",lat:-6.3908,lng:106.9882},
+  {id:22,name:"Pakuwon Mall Bekasi",area:"Bekasi",type:"active",lat:-6.2606,lng:106.9879},
+  {id:23,name:"Mall Artha Gading Jakarta",area:"North Jakarta",type:"active",lat:-6.1494,lng:106.918},
+  {id:24,name:"Summarecon Mall Serpong Tangerang",area:"Tangerang Selatan",type:"active",lat:-6.2414,lng:106.6335},
+  {id:25,name:"Tangerang City Mall Tangerang",area:"Tangerang",type:"active",lat:-6.1787,lng:106.6409},
+  {id:26,name:"Margo City Depok",area:"Depok",type:"active",lat:-6.3748,lng:106.8271},
+  {id:27,name:"Mall Ciputra Tangerang",area:"Tangerang",type:"active",lat:-6.1706,lng:106.6337},
+  {id:28,name:"Mall of Serang Banten",area:"Banten",type:"active",lat:-6.1124,lng:106.1528},
+  {id:29,name:"Mall Jakarta Tower Kemayoran",area:"Central Jakarta",type:"active",lat:-6.1634,lng:106.851},
+  {id:30,name:"Lotte Avenue Ciputra World Mall",area:"South Jakarta",type:"active",lat:-6.2317,lng:106.8127},
+  {id:31,name:"Mall Taman Anggrek Jakarta",area:"West Jakarta",type:"active",lat:-6.1782,lng:106.7878},
+  {id:32,name:"Mall Matahari Jakarta Barat",area:"West Jakarta",type:"active",lat:-6.172,lng:106.7402},
+  {id:33,name:"Lippo Plaza Ekalokasari Bogor",area:"Bogor",type:"active",lat:-6.592,lng:106.796},
+  {id:34,name:"Puri Indah Mall Jakarta",area:"West Jakarta",type:"active",lat:-6.182,lng:106.728},
+  {id:35,name:"Gajah Mada Plaza Jakarta",area:"Central Jakarta",type:"active",lat:-6.162,lng:106.8136},
+  {id:36,name:"Green Pramuka Square Mall Jakarta",area:"Central Jakarta",type:"active",lat:-6.1892,lng:106.872},
+  {id:37,name:"Lippo Plaza Kramat Jati Jakarta Timur",area:"East Jakarta",type:"active",lat:-6.282,lng:106.866},
+  {id:38,name:"Lippo Mall Cikarang",area:"Bekasi",type:"active",lat:-6.3148,lng:107.1474},
+  {id:39,name:"Arion Mall Jakarta Timur",area:"East Jakarta",type:"active",lat:-6.2216,lng:106.8917},
+  {id:40,name:"Semper Av. Kramat Jaya Jakarta",area:"North Jakarta",type:"active",lat:-6.1189,lng:106.8884},
+  {id:41,name:"Mal Ciputra Cibubur",area:"East Jakarta",type:"active",lat:-6.3649,lng:106.8872},
+  {id:42,name:"Living Plaza Jababeka Bekasi",area:"Bekasi",type:"active",lat:-6.3298,lng:107.173},
+  {id:43,name:"Bintaro Plaza Tangerang",area:"Tangerang Selatan",type:"active",lat:-6.2911,lng:106.685},
+  {id:44,name:"Av. Kelapa Dua Depok",area:"Depok",type:"active",lat:-6.3525,lng:106.8104},
+  {id:45,name:"Plaza Pondok Gede Bekasi",area:"Bekasi",type:"active",lat:-6.2872,lng:106.9302},
+  {id:46,name:"Mega Bekasi Hypermall Bekasi",area:"Bekasi",type:"active",lat:-6.244,lng:106.998},
+  {id:47,name:"Living World Cibubur",area:"East Jakarta",type:"active",lat:-6.371,lng:106.905},
+  {id:48,name:"Green Sedayu Mall Jakarta",area:"West Jakarta",type:"construction",lat:-6.141,lng:106.713},
+  {id:49,name:"Av. Tarum Barat Bekasi",area:"Bekasi",type:"construction",lat:-6.239,lng:107.065},
+  {id:50,name:"Mal Atrium Senen Jakarta",area:"Central Jakarta",type:"construction",lat:-6.175,lng:106.8457},
+  {id:51,name:"Paramount Gading Serpong Tangerang",area:"Tangerang",type:"construction",lat:-6.219,lng:106.585},
+  {id:52,name:"AEON Mall Sentul City",area:"Bogor",type:"construction",lat:-6.54,lng:106.835},
+  {id:53,name:"Av. Dr Soetomo Ciledug Tangerang",area:"Tangerang",type:"construction",lat:-6.2312,lng:106.7312},
+  {id:54,name:"Av. Green Lake City Tangerang 2",area:"Tangerang",type:"construction",lat:-6.1602,lng:106.598},
+  {id:55,name:"Cibubur Junction",area:"East Jakarta",type:"construction",lat:-6.352,lng:106.89},
+  {id:56,name:"Av. Moch Kahfi Jakarta",area:"South Jakarta",type:"construction",lat:-6.339,lng:106.8},
+  {id:57,name:"Grand Galaxy Park Bekasi",area:"Bekasi",type:"construction",lat:-6.264,lng:107.043},
+  {id:58,name:"Av. Tlogosari Semarang",area:"Semarang",type:"construction",lat:-6.96,lng:110.464},
+  {id:59,name:"Graha Raya Tangerang Selatan",area:"Tangerang Selatan",type:"construction",lat:-6.258,lng:106.643},
+  {id:60,name:"Av. Poris Tangerang",area:"Tangerang",type:"construction",lat:-6.149,lng:106.624},
+  {id:61,name:"Av. Kutabumi Tangerang",area:"Tangerang",type:"construction",lat:-6.122,lng:106.582},
+  {id:62,name:"Av Merdeka Cimone Tangerang",area:"Tangerang",type:"construction",lat:-6.184,lng:106.612},
+  {id:63,name:"Av. Sawangan Depok",area:"Depok",type:"construction",lat:-6.436,lng:106.755},
+  {id:64,name:"Kalibata City Jakarta",area:"South Jakarta",type:"construction",lat:-6.259,lng:106.846},
+  {id:65,name:"Av. Taman Galaxy Bekasi",area:"Bekasi",type:"construction",lat:-6.286,lng:107.01},
+  {id:66,name:"Av. Harapan Indah Bekasi",area:"Bekasi",type:"construction",lat:-6.175,lng:106.982},
+  {id:67,name:"Av. Abdul Fatah Serang",area:"Banten",type:"construction",lat:-6.114,lng:106.154},
+];
+
+const ES=[
+  {id:'E1',name:"ERAFONE MORE SEMPER",area:"North Jakarta",capa:1476,lat:-6.1189,lng:106.8884},
+  {id:'E2',name:"ERAFONE SUMMARECON MALL BEKASI",area:"Bekasi",capa:1360,lat:-6.2252,lng:107.0053},
+  {id:'E3',name:"ERAFONE KOTA KASABLANKA",area:"South Jakarta",capa:1153,lat:-6.231,lng:106.835},
+  {id:'E4',name:"ERAFONE 2 BOTANI SQUARE",area:"Bogor",capa:966,lat:-6.5881,lng:106.8018},
+  {id:'E5',name:"ERABLUE RE MARTADINATA",area:"Bekasi",capa:900,lat:-6.244,lng:107.02},
+  {id:'E6',name:"ERABLUE HOS COKROAMINOTO CILEDUG",area:"Tangerang",capa:900,lat:-6.2312,lng:106.715},
+  {id:'E7',name:"ERABLUE PLUMPANG SEMPER",area:"North Jakarta",capa:900,lat:-6.11,lng:106.88},
+  {id:'E8',name:"MEGASTORE CIBINONG CITY MALL",area:"Bogor",capa:893,lat:-6.5078,lng:106.8424},
+  {id:'E9',name:"MEGASTORE BINTARO X-CHANGE",area:"Tangerang Selatan",capa:814,lat:-6.2847,lng:106.6925},
+  {id:'E10',name:"ERABLUE RAYA KUTABUMI",area:"Tangerang",capa:800,lat:-6.122,lng:106.582},
+  {id:'E11',name:"MEGASTORE RUKO CILEDUG",area:"Tangerang",capa:723,lat:-6.22,lng:106.72},
+  {id:'E12',name:"ERABLUE DURI KOSAMBI JAKBAR",area:"West Jakarta",capa:700,lat:-6.164,lng:106.725},
+  {id:'E13',name:"MEGASTORE SUMMARECON MAL SERPONG",area:"Tangerang Selatan",capa:688,lat:-6.2414,lng:106.6335},
+  {id:'E14',name:"ERABLUE RAWA BELONG JAKBAR",area:"West Jakarta",capa:680,lat:-6.192,lng:106.76},
+  {id:'E15',name:"MEGASTORE CENTRAL PARK",area:"West Jakarta",capa:653,lat:-6.1779,lng:106.7908},
+  {id:'E16',name:"ERAFONE DAAN MOGOT MALL",area:"West Jakarta",capa:643,lat:-6.158,lng:106.731},
+  {id:'E17',name:"MEGASTORE MAL KELAPA GADING 2",area:"North Jakarta",capa:640,lat:-6.1576,lng:106.9031},
+  {id:'E18',name:"ERAFONE AEON JAKARTA GARDEN CITY",area:"East Jakarta",capa:633,lat:-6.253,lng:106.978},
+  {id:'E19',name:"ERABLUE CURUG RAYA TANGERANG",area:"Tangerang",capa:630,lat:-6.165,lng:106.55},
+  {id:'E20',name:"ERABLUE RADEN SALEH CILEDUG",area:"Tangerang",capa:625,lat:-6.225,lng:106.71},
+  {id:'E21',name:"MEGASTORE MARGO CITY 1 DEPOK",area:"Depok",capa:611,lat:-6.3748,lng:106.8271},
+  {id:'E22',name:"ERABLUE SILIWANGI PAMULANG",area:"Tangerang Selatan",capa:600,lat:-6.334,lng:106.72},
+  {id:'E23',name:"ERAFONE CIPUTRA CITRARAYA TANGERANG",area:"Tangerang",capa:581,lat:-6.18,lng:106.56},
+  {id:'E24',name:"ERAFONE TANGERANG CITY MALL",area:"Tangerang",capa:580,lat:-6.1787,lng:106.6409},
+  {id:'E25',name:"ERAFONE RUKO BOSIH RAYA CIBITUNG",area:"Bekasi",capa:567,lat:-6.27,lng:107.105},
+  {id:'E26',name:"ERAFONE RUKO KEBON JERUK BINUS",area:"West Jakarta",capa:566,lat:-6.19,lng:106.77},
+  {id:'E27',name:"ERAFONE PX PAVILION ST MORITS",area:"West Jakarta",capa:553,lat:-6.1832,lng:106.7535},
+  {id:'E28',name:"MEGASTORE PLAZA JAMBU 2",area:"Bogor",capa:551,lat:-6.5982,lng:106.7923},
+  {id:'E29',name:"ERABLUE KEADILAN RAYA DEPOK",area:"Depok",capa:550,lat:-6.42,lng:106.82},
+  {id:'E30',name:"ERABLUE KH. AGUS SALIM BEKASI",area:"Bekasi",capa:550,lat:-6.238,lng:106.992},
+  {id:'E31',name:"ERABLUE MT. HARYONO BEKASI",area:"Bekasi",capa:550,lat:-6.25,lng:107.015},
+  {id:'E32',name:"ERABLUE PUSPITEK TANGERANG",area:"Tangerang Selatan",capa:550,lat:-6.362,lng:106.662},
+  {id:'E33',name:"ERAFONE BUARAN PLAZA",area:"East Jakarta",capa:538,lat:-6.278,lng:106.913},
+  {id:'E34',name:"ERAFONE 1 SUPERMALL KARAWACI",area:"Tangerang",capa:519,lat:-6.1787,lng:106.6269},
+  {id:'E35',name:"MEGASTORE SUPERMAL KARAWACI",area:"Tangerang",capa:513,lat:-6.179,lng:106.633},
+  {id:'E36',name:"ERAFONE RUKO AHMAD YANI SERANG",area:"Banten",capa:506,lat:-6.12,lng:106.16},
+  {id:'E37',name:"ERAFONE RUKO TELUK GONG",area:"North Jakarta",capa:505,lat:-6.11,lng:106.79},
+  {id:'E38',name:"MEGASTORE RUKO CIKARANG JABABEKA",area:"Bekasi",capa:502,lat:-6.3298,lng:107.173},
+  {id:'E39',name:"ERAFONE RUKO BANTAR GEBANG",area:"Bekasi",capa:484,lat:-6.364,lng:107.01},
+  {id:'E40',name:"ERAFONE 3 MEGA BEKASI HYPERMALL",area:"Bekasi",capa:482,lat:-6.244,lng:106.998},
+  {id:'E41',name:"ERAFONE GANDARIA CITY",area:"South Jakarta",capa:475,lat:-6.244,lng:106.7801},
+  {id:'E42',name:"ERABLUE MAUK TANGERANG",area:"Tangerang",capa:470,lat:-6.18,lng:106.515},
+  {id:'E43',name:"ERAFONE RUKO MOCH KAHFI",area:"South Jakarta",capa:466,lat:-6.339,lng:106.8},
+  {id:'E44',name:"ERAFONE MAL PURI INDAH",area:"West Jakarta",capa:454,lat:-6.182,lng:106.728},
+  {id:'E45',name:"MEGASTORE PONDOK INDAH MALL",area:"South Jakarta",capa:453,lat:-6.264,lng:106.784},
+  {id:'E46',name:"ERABLUE SAWANGAN DEPOK",area:"Depok",capa:450,lat:-6.436,lng:106.755},
+  {id:'E47',name:"ERAFONE AEON MAL BSD CITY",area:"Tangerang Selatan",capa:440,lat:-6.3012,lng:106.6541},
+  {id:'E48',name:"ERAFONE CILEGON CENTER MALL",area:"Banten",capa:435,lat:-6.0025,lng:106.0461},
+  {id:'E49',name:"ERAFONE PLAZA BINTARO JAYA",area:"Tangerang Selatan",capa:423,lat:-6.2911,lng:106.685},
+  {id:'E50',name:"ERAFONE 2.5 REFURBISH MAL ARTHA GADING",area:"North Jakarta",capa:418,lat:-6.1494,lng:106.918},
+  {id:'E51',name:"ERAFONE 2.5 GRAND INDONESIA",area:"Central Jakarta",capa:406,lat:-6.1937,lng:106.8218},
+  {id:'E52',name:"ERAFONE EMPORIUM PLUIT MALL",area:"North Jakarta",capa:406,lat:-6.1234,lng:106.7947},
+  {id:'E53',name:"ERAFONE BINTARO EXCHANGE II",area:"Tangerang Selatan",capa:392,lat:-6.2897,lng:106.687},
+  {id:'E54',name:"MEGASTORE RUKO PERUMNAS BEKASI",area:"Bekasi",capa:387,lat:-6.238,lng:107.005},
+  {id:'E55',name:"ERAFONE MALL OF SERANG",area:"Banten",capa:381,lat:-6.1124,lng:106.1528},
+  {id:'E56',name:"ERAFONE FRANCHISE SUMUR BATU KEMAYORAN",area:"Central Jakarta",capa:380,lat:-6.15,lng:106.855},
+  {id:'E57',name:"MEGASTORE RUKO KEMANG",area:"South Jakarta",capa:376,lat:-6.261,lng:106.813},
+  {id:'E58',name:"ERAFONE AEON TANJUNG BARAT",area:"South Jakarta",capa:375,lat:-6.3185,lng:106.8252},
+  {id:'E59',name:"ERAFONE ARION MALL",area:"East Jakarta",capa:367,lat:-6.2216,lng:106.8917},
+  {id:'E60',name:"ERAFONE MAL TAMAN ANGGREK",area:"West Jakarta",capa:360,lat:-6.1782,lng:106.7878},
+  {id:'E61',name:"MEGASTORE MAL METROPOLITAN",area:"Bekasi",capa:342,lat:-6.3908,lng:106.9882},
+  {id:'E62',name:"ERAFONE TEBET JAKARTA SELATAN",area:"South Jakarta",capa:340,lat:-6.22,lng:106.85},
+  {id:'E63',name:"ERAFONE PANTAI INDAH KAPUK MALL",area:"North Jakarta",capa:338,lat:-6.112,lng:106.745},
+  {id:'E64',name:"ERAFONE THE PARK MALL SAWANGAN",area:"Depok",capa:335,lat:-6.4198,lng:106.7382},
+  {id:'E65',name:"ERAFONE RUKO SURYA KENCANA PAMULANG",area:"Tangerang Selatan",capa:329,lat:-6.349,lng:106.73},
+];
+
+// ── MAP ──
+const map=L.map('map',{center:[-6.25,106.82],zoom:10,zoomControl:false});
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:18}).addTo(map);
+L.control.zoom({position:'bottomleft'}).addTo(map);
+const LG={active:L.layerGroup(),construction:L.layerGroup(),erafone:L.layerGroup(),gaps:L.layerGroup()};
+Object.values(LG).forEach(g=>g.addTo(map));
+const LV={active:true,construction:true,erafone:true,gaps:true};
+const MK={};
+let gapLayers=[];
+let eraRings={};
+let curR=3,selId=null;
+
+function hav(a,b,c,d){const R=6371,dL=(c-a)*Math.PI/180,dN=(d-b)*Math.PI/180,x=Math.sin(dL/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dN/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
+
+function eraCol(c){return c>=900?'#EF4444':c>=600?'#F97316':'#EAB308';}
+
+function mkXIcon(s){
+  const c=s.type==='active'?'#FF6900':'#F59E0B';
+  return L.divIcon({html:`<div style="width:30px;height:36px;"><div style="width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${c};display:flex;align-items:center;justify-content:center;font-size:14px;">📍</div></div>`,iconSize:[30,36],iconAnchor:[15,36]});
+}
+function mkEIcon(e){
+  const c=eraCol(e.capa);
+  return L.divIcon({html:`<div style="width:26px;height:32px;"><div style="width:26px;height:26px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${c};display:flex;align-items:center;justify-content:center;font-size:12px;">📶</div></div>`,iconSize:[26,32],iconAnchor:[13,32]});
+}
+
+function xPop(s){const c=s.type==='active'?'var(--orange)':'var(--construction)';const l=s.type==='active'?'✅ Active Store':'🔨 Under Construction';const ps=s.type==='active'?'ps-active':'ps-construction';return `<div class="pu"><div class="pu-tag" style="color:${c==='var(--orange)'?'#FF6900':'#F59E0B'}">${l}</div><div class="pu-name">${s.name}</div><div class="pu-area">${s.area}</div><div class="pu-row"><div class="pu-lbl">Coordinates:</div><div class="pu-val">${s.lat.toFixed(4)}, ${s.lng.toFixed(4)}</div></div><div class="pu-status ${ps}"><div class="pdot"></div>${l}</div></div>`;}
+
+function ePop(e){const c=eraCol(e.capa);const tier=e.capa>=900?'Very High':e.capa>=600?'High':'Mid';const near=XS.filter(x=>x.type==='active').map(x=>({...x,d:hav(e.lat,e.lng,x.lat,x.lng)})).sort((a,b)=>a.d-b.d).slice(0,3);return `<div class="pu"><div class="pu-tag" style="color:${c}">📶 Erafone</div><div class="pu-name">${e.name}</div><div class="pu-area">${e.area}</div><div class="pu-row"><div class="pu-lbl">Capacity:</div><div class="pu-val" style="color:${c}">${e.capa.toLocaleString()}</div></div><div class="pu-row"><div class="pu-lbl">Tier:</div><div class="pu-val">${tier}</div></div><div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,.05);font-size:9px;color:#A0A0A0;">Nearest Xiaomi: ${near[0]?`${near[0].name} (${(near[0].d).toFixed(1)}km)`:'-'}</div></div>`;}
+
+function gPop(g){const c=g.priority==='high'?'var(--gap)':'var(--construction)';const near=XS.filter(x=>x.type==='active').map(x=>({...x,d:hav(g.e.lat,g.e.lng,x.lat,x.lng)})).sort((a,b)=>a.d-b.d)[0];return `<div class="pu"><div class="pu-tag" style="color:${c==='var(--gap)'?'#22D3EE':'#F59E0B'}">🎯 Gap Zone</div><div class="pu-name">${g.e.name}</div><div class="pu-area">${g.e.area}</div><div class="pu-row"><div class="pu-lbl">Priority:</div><div class="pu-val">${g.priority==='high'?'🔴 HIGH':'🟡 MEDIUM'}</div></div><div class="pu-row"><div class="pu-lbl">Combined Capacity:</div><div class="pu-val">${g.cc.toLocaleString()}</div></div><div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,.05);font-size:9px;color:#A0A0A0;">Nearest Store: ${near?`${near.name} (${(near.d).toFixed(1)}km)`:'-'}</div></div>`;}
+
+// Add Xiaomi markers
+XS.forEach(s=>{
+  const m=L.marker([s.lat,s.lng],{icon:mkXIcon(s)}).bindPopup(xPop(s),{maxWidth:250}).on('click',()=>selItem('X'+s.id));
+  LG[s.type].addLayer(m);MK['X'+s.id]=m;
+});
+// Add Erafone markers + rings
+ES.forEach(e=>{
+  const m=L.marker([e.lat,e.lng],{icon:mkEIcon(e)}).bindPopup(ePop(e),{maxWidth:250}).on('click',()=>selItem(e.id));
+  LG.erafone.addLayer(m);MK[e.id]=m;
+  const ring=L.circle([e.lat,e.lng],{radius:curR*1000,color:eraCol(e.capa),fillColor:eraCol(e.capa),fillOpacity:.04,weight:1,dashArray:'4 4',opacity:.3});
+  eraRings[e.id]=ring;LG.erafone.addLayer(ring);
+});
+
+// ── GAP ANALYSIS ──
+function computeGaps(r){
+  return ES.filter(e=>e.capa>=400).map(e=>{
+    const na=XS.filter(x=>x.type==='active'&&hav(e.lat,e.lng,x.lat,x.lng)<=r);
+    const nc=XS.filter(x=>x.type==='construction'&&hav(e.lat,e.lng,x.lat,x.lng)<=r);
+    const ne=ES.filter(f=>f.id!==e.id&&hav(e.lat,e.lng,f.lat,f.lng)<=r*.5);
+    const cc=e.capa+ne.reduce((s,f)=>s+f.capa,0);
+    const priority=na.length>0?null:nc.length>0?'medium':'high';
+    return priority?{e,na,nc,ne,cc,priority}:null;
+  }).filter(Boolean).sort((a,b)=>b.cc-a.cc);
+}
+
+function drawGapCircles(gaps,r){
+  gapLayers.forEach(l=>LG.gaps.removeLayer(l));gapLayers=[];
+  gaps.forEach(g=>{
+    const col=g.priority==='high'?'#22D3EE':'#A3E635';
+    const c=L.circle([g.e.lat,g.e.lng],{radius:r*1000,color:col,fillColor:col,fillOpacity:.07,weight:2,dashArray:'6 3',opacity:.75});
+    const dot=L.circleMarker([g.e.lat,g.e.lng],{radius:7,color:col,fillColor:col,fillOpacity:.9,weight:2}).bindPopup(gPop(g),{maxWidth:260}).on('click',()=>selItem(g.e.id));
+    LG.gaps.addLayer(c);LG.gaps.addLayer(dot);gapLayers.push(c,dot);
+  });
+}
+
+function updateRadius(v){
+  curR=parseFloat(v);document.getElementById('rVal').textContent=v+' km';
+  ES.forEach(e=>{if(eraRings[e.id])eraRings[e.id].setRadius(curR*1000);});
+  const gaps=computeGaps(curR);drawGapCircles(gaps,curR);buildGapPanel(gaps);
+  const hn=gaps.filter(g=>g.priority==='high').length;
+  document.getElementById('cG').textContent=hn;document.getElementById('mc-gap').textContent=hn;
+}
+
+// ── SIDEBAR BUILDERS ──
+function buildStoresPanel(){
+  const act=XS.filter(s=>s.type==='active'),con=XS.filter(s=>s.type==='construction');
+  let h=`<div class="cat-hdr"><div class="ch-dot" style="background:var(--orange)"></div><span class="ch-lbl">Active Stores</span><span class="ch-cnt">${act.length}</span></div>`;
+  act.forEach(s=>{h+=`<div class="si-item t-active" id="item-X${s.id}" onclick="selItem('X${s.id}')"><div class="si-icon" style="background:rgba(255,105,0,.1);border:1px solid rgba(255,105,0,.2);">📍</div><div class="si-info"><div class="si-name">${s.name}</div><div class="si-sub"><span class="badge b-active">Active</span>${s.area}</div></div></div>`;});
+  h+=`<div class="sdiv"></div><div class="cat-hdr"><div class="ch-dot" style="background:var(--construction)"></div><span class="ch-lbl">Under Construction</span><span class="ch-cnt">${con.length}</span></div>`;
+  con.forEach(s=>{h+=`<div class="si-item t-construction" id="item-X${s.id}" onclick="selItem('X${s.id}')"><div class="si-icon" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);">🔨</div><div class="si-info"><div class="si-name">${s.name}</div><div class="si-sub"><span class="badge b-construction">Coming</span>${s.area}</div></div></div>`;});
+  document.getElementById('panel-stores').innerHTML=h;
+}
+
+function buildErafonePanel(){
+  const mx=ES[0].capa;
+  let h=`<div class="cat-hdr"><div class="ch-dot" style="background:var(--era-high)"></div><span class="ch-lbl">Erafone Capacity Ranking</span><span class="ch-cnt">${ES.length}</span></div>`;
+  [...ES].sort((a,b)=>b.capa-a.capa).forEach(e=>{
+    const col=eraCol(e.capa),pct=(e.capa/mx*100).toFixed(1),tier=e.capa>=900?'Very High':e.capa>=600?'High':'Mid';
+    h+=`<div class="si-item t-erafone" id="item-${e.id}" onclick="selItem('${e.id}')"><div class="si-icon" style="background:${col}22;border:1px solid ${col}44;">📶</div><div class="si-info"><div class="si-name">${e.name}</div><div class="si-sub"><span class="badge b-era">${tier}</span>${e.area}</div><div class="capa-row"><div class="capa-bg"><div class="capa-fill" style="width:${pct}%;background:${col};"></div></div><div class="capa-num">${e.capa}</div></div></div></div>`;
+  });
+  document.getElementById('panel-erafone').innerHTML=h;
+}
+
+function buildGapPanel(gaps){
+  const el=document.getElementById('panel-gaps');
+  if(!gaps.length){el.innerHTML='<div style="padding:20px;font-size:12px;color:var(--text3);text-align:center;">No gap zones at this radius.<br>Try reducing the search radius.</div>';return;}
+  const hi=gaps.filter(g=>g.priority==='high'),md=gaps.filter(g=>g.priority==='medium');
+  let h=`<div style="padding:8px 12px 4px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);">🎯 ${hi.length} Gap Zones · ${md.length} With Planned Stores</div>`;
+  if(hi.length){h+=`<div style="padding:4px 12px 2px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--era-high);">🔴 NO XIAOMI COVERAGE</div>`;hi.forEach((g,i)=>h+=gcCard(g,i+1));}
+  if(md.length){h+=`<div style="padding:8px 12px 2px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--construction);">🟡 CONSTRUCTION PLANNED NEARBY</div>`;md.forEach((g,i)=>h+=gcCard(g,hi.length+i+1));}
+  el.innerHTML=h;
+}
+
+function gcCard(g,rank){
+  const col=g.priority==='high'?'var(--gap)':'var(--construction)';
+  const pc=g.priority==='high'?'p-high':'p-med';
+  const near=XS.filter(x=>x.type==='active').map(x=>({...x,d:hav(g.e.lat,g.e.lng,x.lat,x.lng)})).sort((a,b)=>a.d-b.d)[0];
+  const rec=g.priority==='high'
+    ?`<strong>Recommended:</strong> Open a new Xiaomi Authorized Store near <em>${g.e.name.replace(/^(ERAFONE|ERABLUE|MEGASTORE)\s/,'')}</em>. Erafone capa ${g.e.capa.toLocaleString()} signals strong demand.`
+    :`<strong>Construction underway:</strong> ${g.nc.map(x=>x.name).join(', ')} will serve this area once open.`;
+  return`<div class="gap-card"><div class="gc-hdr" onclick="this.nextElementSibling.classList.toggle('open');selItem('${g.e.id}')"><div class="gc-rank ${pc}">#${rank}</div><div><div class="gc-name">${g.e.name.replace(/^(ERAFONE|ERABLUE|MEGASTORE)\s/,'')}</div><div class="gc-capa">${g.cc.toLocaleString()}</div></div></div><div class="gc-body"><div class="gc-row"><div class="gc-lbl">Erafone Only:</div><div class="gc-val">${g.e.capa}</div></div><div class="gc-row"><div class="gc-lbl">+ Nearby Erafone:</div><div class="gc-val">${g.ne.reduce((s,x)=>s+x.capa,0)}</div></div><div class="gc-row"><div class="gc-lbl">Combined Capa:</div><div class="gc-val">${g.cc}</div></div><div class="gc-row"><div class="gc-lbl">Distance to Nearest:</div><div class="gc-val">${near?(near.d).toFixed(1)+' km':'-'}</div></div><div class="gc-rec">${rec}</div></div></div>`;
+}
+
+// ── INTERACTION ──
+function selItem(id){
+  if(selId){const p=document.getElementById('item-'+selId);if(p)p.classList.remove('selected');}
+  selId=id;
+  const el=document.getElementById('item-'+id);
+  if(el){el.classList.add('selected');el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  if(MK[id]){const ll=MK[id].getLatLng();map.flyTo([ll.lat,ll.lng],14,{duration:.8});setTimeout(()=>MK[id].openPopup(),500);}
+}
+
+let curPanel='stores';
+function showPanel(id,btn){
+  curPanel=id;
+  document.querySelectorAll('.s-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  ['stores','erafone','gaps'].forEach(p=>{const el=document.getElementById('panel-'+p);if(el)el.style.display=p===id?'':'none';});
+  document.getElementById('srch').value='';filterSearch('');
+}
+
+function toggleLayer(t){
+  LV[t]=!LV[t];const btn=document.getElementById('lt-'+t);
+  btn.classList.toggle('off',!LV[t]);btn.classList.toggle('on',LV[t]);
+  if(LV[t])LG[t].addTo(map);else map.removeLayer(LG[t]);
+}
+
+function filterSearch(q){
+  q=q.toLowerCase().trim();
+  XS.forEach(s=>{const el=document.getElementById('item-X'+s.id);if(!el)return;el.classList.toggle('hidden',!(!q||s.name.toLowerCase().includes(q)||s.area.toLowerCase().includes(q)));});
+  ES.forEach(e=>{const el=document.getElementById('item-'+e.id);if(!el)return;el.classList.toggle('hidden',!(!q||e.name.toLowerCase().includes(q)||e.area.toLowerCase().includes(q)));});
+}
+
+// ── BOOT ──
+buildStoresPanel();buildErafonePanel();
+const ig=computeGaps(curR);drawGapCircles(ig,curR);buildGapPanel(ig);
+const ihn=ig.filter(g=>g.priority==='high').length;
+document.getElementById('cG').textContent=ihn;document.getElementById('mc-gap').textContent=ihn;
+map.fitBounds([[-6.7,105.9],[-6.0,107.3]],{padding:[20,20]});
+
+// Fix panel show
+function showPanel(id,btn){
+  curPanel=id;
+  document.querySelectorAll('.s-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  ['stores','erafone','gaps'].forEach(p=>{const el=document.getElementById('panel-'+p);if(el)el.style.display=p===id?'':'none';});
+  document.getElementById('srch').value='';filterSearch('');
+}
+</script>
+</body>
+</html>
