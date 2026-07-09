@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Xiaomi Jakarta–Banten — Store Locator & Gap Analysis</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
 :root{--orange:#FF6900;--orange-pale:rgba(255,105,0,0.12);--construction:#F59E0B;--construction-pale:rgba(245,158,11,0.12);--era-high:#EF4444;--era-mid:#F97316;--era-low:#EAB308;--gap:#22D3EE;--gap-pale:rgba(34,211,238,0.10);--bg:#0F0F0F;--bg2:#181818;--bg3:#222;--bg4:#2A2A2A;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);--text:#F0F0F0;--text2:#A0A0A0;--text3:#606060;--green:#22C55E;--font:'Inter',sans-serif;}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -135,9 +135,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;heigh
   <div class="divider"></div>
   <div class="region-tag">JAKARTA NR</div>
   <div class="topbar-stats">
-    <div class="stat-pill"><div class="stat-dot" style="background:var(--orange)"></div><span class="stat-num" id="cA">47</span><span class="stat-lbl">Active</span></div>
-    <div class="stat-pill"><div class="stat-dot" style="background:var(--construction)"></div><span class="stat-num" id="cC">19</span><span class="stat-lbl">Construction</span></div>
-    <div class="stat-pill"><div class="stat-dot" style="background:var(--era-high)"></div><span class="stat-num" id="cE">65</span><span class="stat-lbl">Erafone</span></div>
+    <div class="stat-pill"><div class="stat-dot" style="background:var(--orange)"></div><span class="stat-num" id="cA">50</span><span class="stat-lbl">Active</span></div>
+    <div class="stat-pill"><div class="stat-dot" style="background:var(--construction)"></div><span class="stat-num" id="cC">22</span><span class="stat-lbl">Construction</span></div>
+    <div class="stat-pill"><div class="stat-dot" style="background:var(--era-high)"></div><span class="stat-num" id="cE">72</span><span class="stat-lbl">Erafone</span></div>
     <div class="stat-pill"><div class="stat-dot" style="background:var(--gap)"></div><span class="stat-num" id="cG">0</span><span class="stat-lbl">Gap Zones</span></div>
   </div>
 </header>
@@ -166,16 +166,16 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;heigh
   <div class="map-wrap">
     <div id="map"></div>
     <div class="map-ov">
-      <div class="chip"><div class="chip-dot" style="background:var(--orange)"></div><span class="chip-num">47</span><span>Active Stores</span></div>
-      <div class="chip"><div class="chip-dot" style="background:var(--construction)"></div><span class="chip-num">19</span><span>Under Construction</span></div>
-      <div class="chip"><div class="chip-dot" style="background:var(--era-high)"></div><span class="chip-num">65</span><span>Erafone Stores</span></div>
+      <div class="chip"><div class="chip-dot" style="background:var(--orange)"></div><span class="chip-num">50</span><span>Active Stores</span></div>
+      <div class="chip"><div class="chip-dot" style="background:var(--construction)"></div><span class="chip-num">22</span><span>Under Construction</span></div>
+      <div class="chip"><div class="chip-dot" style="background:var(--era-high)"></div><span class="chip-num">72</span><span>Erafone Stores</span></div>
       <div class="chip"><div class="chip-dot" style="background:var(--gap)"></div><span class="chip-num" id="mc-gap">0</span><span>Gap Zones</span></div>
     </div>
     <div class="radius-ctrl">
-      <div class="rc-title">Gap Search Radius</div>
+      <div class="rc-title">Gap Search Radius <span style="font-weight:400;color:var(--text3);text-transform:none;letter-spacing:0;">(mall-format only — street-format always uses a fixed 2km)</span></div>
       <div class="rc-row">
-        <input type="range" min="1" max="10" value="3" step="0.5" id="radiusSlider" oninput="updateRadius(this.value)">
-        <span class="rc-val" id="rVal">3 km</span>
+        <input type="range" min="1" max="10" value="2" step="0.5" id="radiusSlider" oninput="updateRadius(this.value)">
+        <span class="rc-val" id="rVal">2 km</span>
       </div>
     </div>
     <div class="legend">
@@ -184,8 +184,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;heigh
       <div class="leg-item"><div class="leg-pin" style="background:var(--construction)"></div>Under Construction</div>
       <div class="leg-item"><div class="leg-pin" style="background:var(--era-high)"></div>Erafone ≥900</div>
       <div class="leg-item"><div class="leg-pin" style="background:var(--era-mid)"></div>Erafone 600–899</div>
-      <div class="leg-item"><div class="leg-pin" style="background:var(--era-low)"></div>Erafone &lt;600</div>
-      <div class="leg-item"><div class="leg-ring" style="border-color:var(--gap)"></div>Gap Zone (no Xiaomi)</div>
+      <div class="leg-item"><div class="leg-pin" style="background:var(--era-low)"></div>Erafone 500–599</div>
+      <div class="leg-item"><div class="leg-ring" style="border-color:var(--gap)"></div>Gap Zone (≥300 capa)</div>
       <div class="leg-item"><div class="leg-ring" style="border-color:rgba(239,68,68,.5)"></div>Erafone Radius</div>
     </div>
   </div>
@@ -193,155 +193,161 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;heigh
 
 <script>
 const XS=[
-  {id:1,name:"Plaza Jambu 2 Bogor",area:"Bogor",type:"active",lat:-6.5982,lng:106.7923},
-  {id:2,name:"Mall Ambassador Jakarta",area:"South East Jakarta",type:"active",lat:-6.2249,lng:106.840},
-  {id:3,name:"Central Park Mall Jakarta",area:"West Jakarta",type:"active",lat:-6.1779,lng:106.7908},
-  {id:4,name:"Gandaria City Jakarta",area:"South Jakarta",type:"active",lat:-6.244,lng:106.7801},
-  {id:5,name:"Lippo Mall ST Moritz Jakarta",area:"West Jakarta",type:"active",lat:-6.1832,lng:106.7535},
-  {id:6,name:"Botani Square Mall Bogor",area:"Bogor",type:"active",lat:-6.5881,lng:106.8018},
-  {id:7,name:"Trans Studio Mall Cibubur Depok",area:"East Jakarta",type:"active",lat:-6.3805,lng:106.9102},
-  {id:8,name:"Cibinong City Mall Cibinong",area:"Bogor",type:"active",lat:-6.5078,lng:106.8424},
-  {id:9,name:"Summarecon Mall Bekasi",area:"Bekasi",type:"active",lat:-6.2252,lng:107.0053},
-  {id:10,name:"Living World Alam Sutera Tangerang Selatan",area:"Tangerang Selatan",type:"active",lat:-6.2259,lng:106.6504},
-  {id:11,name:"AEON Mall BSD City Tangerang",area:"Tangerang Selatan",type:"active",lat:-6.3012,lng:106.6541},
-  {id:12,name:"AEON Mall Jakarta Garden City",area:"East Jakarta",type:"active",lat:-6.253,lng:106.978},
-  {id:13,name:"The Park Sawangan Depok",area:"Depok",type:"active",lat:-6.4198,lng:106.7382},
-  {id:14,name:"Bintaro Jaya Xchange Mall 1",area:"Tangerang Selatan",type:"active",lat:-6.2847,lng:106.6925},
-  {id:15,name:"E-Center Supermall Karawaci",area:"Tangerang",type:"active",lat:-6.1787,lng:106.6269},
-  {id:16,name:"Mall Kelapa Gading Jakarta",area:"North Jakarta",type:"active",lat:-6.1576,lng:106.9031},
-  {id:17,name:"Emporium Pluit Mall Jakarta",area:"North Jakarta",type:"active",lat:-6.1234,lng:106.7947},
-  {id:18,name:"Grand Metropolitan Mall Bekasi",area:"Bekasi",type:"active",lat:-6.2413,lng:107.0073},
-  {id:19,name:"AEON Mall Tanjung Barat Jakarta",area:"South Jakarta",type:"active",lat:-6.3185,lng:106.8252},
-  {id:20,name:"Cilegon Center Mall Cilegon",area:"Banten",type:"active",lat:-6.0025,lng:106.0461},
-  {id:21,name:"Metropolitan Mall Cileungsi Bogor",area:"Bekasi",type:"active",lat:-6.3908,lng:106.9882},
-  {id:22,name:"Pakuwon Mall Bekasi",area:"Bekasi",type:"active",lat:-6.2606,lng:106.9879},
-  {id:23,name:"Mall Artha Gading Jakarta",area:"North Jakarta",type:"active",lat:-6.1494,lng:106.918},
-  {id:24,name:"Summarecon Mall Serpong Tangerang",area:"Tangerang Selatan",type:"active",lat:-6.2414,lng:106.6335},
-  {id:25,name:"Tangerang City Mall Tangerang",area:"Tangerang",type:"active",lat:-6.1787,lng:106.6409},
-  {id:26,name:"Margo City Depok",area:"Depok",type:"active",lat:-6.3748,lng:106.8271},
-  {id:27,name:"Mall Ciputra Tangerang",area:"Tangerang",type:"active",lat:-6.1706,lng:106.6337},
-  {id:28,name:"Mall of Serang Banten",area:"Banten",type:"active",lat:-6.1124,lng:106.1528},
-  {id:29,name:"Mall Jakarta Tower Kemayoran",area:"Central Jakarta",type:"active",lat:-6.1634,lng:106.851},
-  {id:30,name:"Lotte Avenue Ciputra World Mall",area:"South Jakarta",type:"active",lat:-6.2317,lng:106.8127},
-  {id:31,name:"Mall Taman Anggrek Jakarta",area:"West Jakarta",type:"active",lat:-6.1782,lng:106.7878},
-  {id:32,name:"Mall Matahari Jakarta Barat",area:"West Jakarta",type:"active",lat:-6.172,lng:106.7402},
-  {id:33,name:"Lippo Plaza Ekalokasari Bogor",area:"Bogor",type:"active",lat:-6.592,lng:106.796},
-  {id:34,name:"Puri Indah Mall Jakarta",area:"West Jakarta",type:"active",lat:-6.182,lng:106.728},
-  {id:35,name:"Gajah Mada Plaza Jakarta",area:"Central Jakarta",type:"active",lat:-6.162,lng:106.8136},
-  {id:36,name:"Green Pramuka Square Mall Jakarta",area:"Central Jakarta",type:"active",lat:-6.1892,lng:106.872},
-  {id:37,name:"Lippo Plaza Kramat Jati Jakarta Timur",area:"East Jakarta",type:"active",lat:-6.282,lng:106.866},
-  {id:38,name:"Lippo Mall Cikarang",area:"Bekasi",type:"active",lat:-6.3148,lng:107.1474},
-  {id:39,name:"Arion Mall Jakarta Timur",area:"East Jakarta",type:"active",lat:-6.2216,lng:106.8917},
-  {id:40,name:"Semper Av. Kramat Jaya Jakarta",area:"North Jakarta",type:"active",lat:-6.1189,lng:106.8884},
-  {id:41,name:"Mal Ciputra Cibubur",area:"East Jakarta",type:"active",lat:-6.3649,lng:106.8872},
-  {id:42,name:"Living Plaza Jababeka Bekasi",area:"Bekasi",type:"active",lat:-6.3298,lng:107.173},
-  {id:43,name:"Bintaro Plaza Tangerang",area:"Tangerang Selatan",type:"active",lat:-6.2911,lng:106.685},
-  {id:44,name:"Av. Kelapa Dua Depok",area:"Depok",type:"active",lat:-6.3525,lng:106.8104},
-  {id:45,name:"Plaza Pondok Gede Bekasi",area:"Bekasi",type:"active",lat:-6.2872,lng:106.9302},
-  {id:46,name:"Mega Bekasi Hypermall Bekasi",area:"Bekasi",type:"active",lat:-6.244,lng:106.998},
-  {id:47,name:"Living World Cibubur",area:"East Jakarta",type:"active",lat:-6.371,lng:106.905},
-  {id:48,name:"Green Sedayu Mall Jakarta",area:"West Jakarta",type:"construction",lat:-6.141,lng:106.713},
-  {id:49,name:"Av. Tarum Barat Bekasi",area:"Bekasi",type:"construction",lat:-6.239,lng:107.065},
-  {id:50,name:"Mal Atrium Senen Jakarta",area:"Central Jakarta",type:"construction",lat:-6.175,lng:106.8457},
-  {id:51,name:"Paramount Gading Serpong Tangerang",area:"Tangerang",type:"construction",lat:-6.219,lng:106.585},
-  {id:52,name:"AEON Mall Sentul City",area:"Bogor",type:"construction",lat:-6.54,lng:106.835},
-  {id:53,name:"Av. Dr Soetomo Ciledug Tangerang",area:"Tangerang",type:"construction",lat:-6.2312,lng:106.7312},
-  {id:54,name:"Av. Green Lake City Tangerang 2",area:"Tangerang",type:"construction",lat:-6.1602,lng:106.598},
-  {id:55,name:"Cibubur Junction",area:"East Jakarta",type:"construction",lat:-6.352,lng:106.89},
-  {id:56,name:"Av. Moch Kahfi Jakarta",area:"South Jakarta",type:"construction",lat:-6.339,lng:106.8},
-  {id:57,name:"Grand Galaxy Park Bekasi",area:"Bekasi",type:"construction",lat:-6.264,lng:107.043},
-  {id:58,name:"Av. Tlogosari Semarang",area:"Semarang",type:"construction",lat:-6.96,lng:110.464},
-  {id:59,name:"Graha Raya Tangerang Selatan",area:"Tangerang Selatan",type:"construction",lat:-6.258,lng:106.643},
-  {id:60,name:"Av. Poris Tangerang",area:"Tangerang",type:"construction",lat:-6.149,lng:106.624},
-  {id:61,name:"Av. Kutabumi Tangerang",area:"Tangerang",type:"construction",lat:-6.122,lng:106.582},
-  {id:62,name:"Av Merdeka Cimone Tangerang",area:"Tangerang",type:"construction",lat:-6.184,lng:106.612},
-  {id:63,name:"Av. Sawangan Depok",area:"Depok",type:"construction",lat:-6.436,lng:106.755},
-  {id:64,name:"Kalibata City Jakarta",area:"South Jakarta",type:"construction",lat:-6.259,lng:106.846},
-  {id:65,name:"Av. Taman Galaxy Bekasi",area:"Bekasi",type:"construction",lat:-6.286,lng:107.01},
-  {id:66,name:"Av. Harapan Indah Bekasi",area:"Bekasi",type:"construction",lat:-6.175,lng:106.982},
-  {id:67,name:"Av. Abdul Fatah Serang",area:"Banten",type:"construction",lat:-6.114,lng:106.154},
+  {id:1,name:"Plaza Jambu 2 Bogor",area:"Bogor",type:"active",gmv:1091132979,sub:"mall",addr:"Plaza Jambu Dua, Lt. 1, Blok. A2 No. 04, Jl. A. Yani No.1, Bantarjati, Kec. Kota Bogor Utara, Kota Bogor, Jawa Barat 16153",lat:-6.5693,lng:106.8082},
+  {id:2,name:"Mall Ambassador Jakarta",area:"South East Jakarta",type:"active",gmv:916589264,sub:"mall",addr:"Mall Ambasador Lantai Dasar, Jl. Prof. DR. Satrio No.8 Ground Floor, Kuningan, Karet Kuningan, Kecamatan Setiabudi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12940",lat:-6.2239,lng:106.8267},
+  {id:3,name:"Central Park Mall Jakarta",area:"West Jakarta",type:"active",gmv:1431183867,sub:"mall",addr:"Letjen S. Parman St No.Kav. 28, South Tanjung Duren, Grogol petamburan, West Jakarta City, Jakarta 11470",lat:-6.1779,lng:106.7908},
+  {id:4,name:"Gandaria City Jakarta",area:"South Jakarta",type:"active",gmv:1292977187,sub:"mall",addr:"Jl. Sultan Iskandar Muda, Gandaria, Kec. Kby. Lama, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12240",lat:-6.244,lng:106.7801},
+  {id:5,name:"Lippo Mall ST Moritz Jakarta",area:"West Jakarta",type:"active",gmv:1218957950,sub:"mall",addr:"Jl. Puri Indah Raya Blok U 1, Puri Indah CBD, Kembangan, Jakarta Barat-11610, Lt.1 No. 87",lat:-6.1881,lng:106.7383},
+  {id:6,name:"Botani Square Mall Bogor",area:"Bogor",type:"active",gmv:1137319186,sub:"mall",addr:"Jl. Raya Pajajaran, Tegallega, Bogor Tengah, Kota Bogor, Jawa Barat 16127, L1 Area EX IT Center B (Samping ibox)",lat:-6.5881,lng:106.8018},
+  {id:7,name:"Trans Studio Mall Cibubur Depok",area:"East Jakarta",type:"active",gmv:692600000,sub:"mall",addr:"jl.alternatif cibubur, trans studio mall cibubur no.230 Lt.2 unit 56,harjamukti,kec.cimanggis kota depok",lat:-6.3805,lng:106.9102},
+  {id:8,name:"Cibinong City Mall Cibinong",area:"Bogor",type:"active",gmv:974295029,sub:"mall",addr:"CIBINONG CITY MALL Jl.Tegar Beriman No.1 Pakansari, Cibinong, Bogor, Jawa Barat 16914, Lantai LG, 19",lat:-6.4842,lng:106.8423},
+  {id:9,name:"Summarecon Mall Bekasi",area:"Bekasi",type:"active",gmv:1874522936,sub:"mall",addr:"Jl. Boulevard Ahmad Yani Blok M, Sentra Summarecon Bekasi, Kota Bks, Jawa Barat 17142, GF - 121A",lat:-6.2255,lng:107.0012},
+  {id:10,name:"Living World Alam Sutera Tangerang Selatan",area:"Tangerang Selatan",type:"active",gmv:990969721,sub:"mall",addr:"Jl. Alam Sutera Boulevard No.Kav. 21, Pakulonan, Kec. Serpong Utara, Kota Tangerang Selatan, Banten 15325",lat:-6.2444,lng:106.6536},
+  {id:11,name:"AEON Mall BSD City Tangerang",area:"Tangerang Selatan",type:"active",gmv:1417748964,sub:"mall",addr:"Jl. BSD Raya Utama No.LT 3, Pagedangan, Kec. Pagedangan, Kabupaten Tangerang, Banten 15345",lat:-6.3012,lng:106.6541},
+  {id:12,name:"AEON Mall Jakarta Garden City",area:"East Jakarta",type:"active",gmv:867633957,sub:"mall",addr:"Jl. Jakarta Garden City, RT.1/RW.6, Cakung Timur, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13910, Lt. GF Unit G - G32",lat:-6.253,lng:106.978},
+  {id:13,name:"The Park Sawangan Depok",area:"Depok",type:"active",gmv:941781121,sub:"mall",addr:"The Park Mall Sawangan Lt.2 Unit 0060, Jl. Serua Kec. Bojongsari Sawangan Kota Depok Jawa Barat 16517",lat:-6.4198,lng:106.7382},
+  {id:14,name:"Bintaro Jaya Xchange Mall 1",area:"Tangerang Selatan",type:"active",gmv:1809017557,sub:"mall",addr:"Jl. Lkr. Jaya No.24, Pd. Jaya, Kec. Pd. Aren, Tangerang, Banten 15227",lat:-6.2856,lng:106.7278},
+  {id:15,name:"E-Center Supermall Karawaci",area:"Tangerang",type:"active",gmv:1084645771,sub:"mall",addr:"Jl. Boulevard Diponegoro No.105, Bencongan, Kec. Klp. Dua, Kabupaten Tangerang, Banten 15810",lat:-6.1787,lng:106.6269},
+  {id:16,name:"Mall Kelapa Gading Jakarta",area:"North Jakarta",type:"active",gmv:1256492736,sub:"mall",addr:"Jl. Boulevar Kelapa Gading Blok M, Jakarta Utara, Daerah Khusus Ibukota Jakarta 14240, Lt. 1 Unit F No. 286, 288 & 294",lat:-6.1576,lng:106.9031},
+  {id:17,name:"Emporium Pluit Mall Jakarta",area:"North Jakarta",type:"active",gmv:1381395192,sub:"mall",addr:"Jl. Pluit Selatan Raya, RT.23/RW.8, Penjaringan, Kota Jkt Utara, Daerah Khusus Ibukota Jakarta 14440, Lt. 2 No. 37",lat:-6.1234,lng:106.7947},
+  {id:18,name:"Grand Metropolitan Mall Bekasi",area:"Bekasi",type:"active",gmv:478819921,sub:"mall",addr:"Jl. KH. Noer Ali, RT.007/RW.003, Pekayon Jaya, Kec. Bekasi Sel., Kota Bks, Jawa Barat 17148",lat:-6.2492,lng:106.9849},
+  {id:19,name:"AEON Mall Tanjung Barat Jakarta",area:"South Jakarta",type:"active",gmv:935303400,sub:"mall",addr:"Jl. Raya Tj. Barat No.163, RT.12/RW.4, Tj. Bar., Kec. Jagakarsa, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12530",lat:-6.3185,lng:106.8252},
+  {id:20,name:"Cilegon Center Mall Cilegon",area:"Banten",type:"active",gmv:1003854771,sub:"mall",addr:"Cilegon Center Mall Lt. 1 Unit No. 12, Jl. Ahmad Yani, Sukmajaya, Kec. Jombang, Kota Cilegon, Banten 42416,",lat:-6.0025,lng:106.0461},
+  {id:21,name:"Metropolitan Mall Cileungsi Bogor",area:"Bekasi",type:"active",gmv:854235443,sub:"mall",addr:"Jl. Metland No.4-15, Cileungsi, Bogor, Jawa Barat 16820, Lt.1 No. 23-24",lat:-6.3908,lng:106.9882},
+  {id:22,name:"Pakuwon Mall Bekasi",area:"Bekasi",type:"active",gmv:1009095464,sub:"mall",addr:"Pakuwon Mall Bekasi L2 - 46 Jl. Raya Pekayon No.002, Pekayon Jaya, Kec. Bekasi Sel., Kota Bks, Jawa Barat 17148",lat:-6.2606,lng:106.9879},
+  {id:23,name:"Mall Artha Gading Jakarta",area:"North Jakarta",type:"active",gmv:688032836,sub:"mall",addr:"Mall Artha Gading Mall artha gading GF/A6/016 ,Jl. Artha Gading Sel. No.1, Klp. Gading Bar., Kec. Klp. Gading, Jkt Utara, Daerah Khusus Ibukota Jakarta 14240",lat:-6.1494,lng:106.918},
+  {id:24,name:"Summarecon Mall Serpong Tangerang",area:"Tangerang Selatan",type:"active",gmv:2305218443,sub:"mall",addr:"Jalan Gading Serpong Boulevard GF 02, Pakulonan Bar., Kec. Klp. Dua, Kabupaten Tangerang, Banten 15810",lat:-6.2414,lng:106.6335},
+  {id:25,name:"Tangerang City Mall Tangerang",area:"Tangerang",type:"active",gmv:1545405357,sub:"mall",addr:"Tangcity Mall Lantai LG Blok B No. 63-64 ,Jl. Jenderal Sudirman No.1, Cikokol, Kec. Tangerang, Kota Tangerang, Banten 15117",lat:-6.1787,lng:106.6409},
+  {id:26,name:"Margo City Depok",area:"Depok",type:"active",gmv:1272646450,sub:"mall",addr:"Margo City Depok Lt.2 Unit 2-70 Jl. Margonda Raya No.358 Kemiri Muka Kecamatan Beji Kota Depok Jawa Barat 16423",lat:-6.3748,lng:106.8271},
+  {id:27,name:"Mall Ciputra Tangerang",area:"Tangerang",type:"active",gmv:938451364,sub:"mall",addr:"Mall Ciputra Tanggerang, Jl. Citra Raya Boulevard Lt. GF No. C03, Ciakar, Kec. Panongan, Kabupaten Tangerang, Banten 15710",lat:-6.1706,lng:106.6337},
+  {id:28,name:"Mall of Serang Banten",area:"Banten",type:"active",gmv:445749929,sub:"mall",addr:"Jl. Akses Tol Serang Tim., Panancangan, Kec. Cipocok Jaya, Kota Serang, Banten 42124",lat:-6.1124,lng:106.1528},
+  {id:29,name:"Mall Jakarta Tower Kemayoran",area:"Central Jakarta",type:"active",gmv:374707544,sub:"mall",addr:"Menara Jakarta Lt.1 ,Jl. Kota Baru Bandar Kemayoran No.C-8, Gunung Sahari Selatan, Kemayoran, Jakarta Pusat, Jakarta 10610",lat:-6.1634,lng:106.851},
+  {id:30,name:"Lotte Avenue Ciputra World Mall",area:"South Jakarta",type:"active",gmv:720821543,sub:"mall",addr:"Jl. Prof. DR. Satrio No.Kav. 3-5, RT.17/RW.4, Kuningan, Karet Kuningan, Kecamatan Setiabudi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12940",lat:-6.2317,lng:106.8127},
+  {id:31,name:"Mall Taman Anggrek Jakarta",area:"West Jakarta",type:"active",gmv:718780588,sub:"mall",addr:"Jl. Letjen S. Parman, RT.12/RW.1, Tj. Duren Sel., Kec. Grogol petamburan, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11470",lat:-6.1782,lng:106.7878},
+  {id:32,name:"Mall Matahari Jakarta Barat",area:"West Jakarta",type:"active",gmv:312089257,sub:"mall",addr:"1 Floor No.33/34 Jl. Daan Mogot, RT.8/RW.12, Kalideres, Kec. Kalideres, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11820",lat:-6.172,lng:106.7402},
+  {id:33,name:"Lippo Plaza Ekalokasari Bogor",area:"Bogor",type:"active",gmv:303043250,sub:"mall",addr:"Lippo Plaza Ekalokasari – Jl. Siliwangi No. 123, Sukasari, Bogor Timur, Bogor, Jawa Barat 16142",lat:-6.592,lng:106.796},
+  {id:34,name:"Puri Indah Mall Jakarta",area:"West Jakarta",type:"active",gmv:939251025,sub:"mall",addr:"Jl. Puri Agung No.1, Kembangan Sel., Kec. Kembangan, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11610",lat:-6.1886,lng:106.7339},
+  {id:35,name:"Gajah Mada Plaza Jakarta",area:"Central Jakarta",type:"active",gmv:540104475,sub:"mall",addr:"Jl. Gajah Mada No.19 26, RT.2/RW.1, North Petojo, Gambir, Central Jakarta City, Jakarta 10130",lat:-6.162,lng:106.8136},
+  {id:36,name:"Green Pramuka Square Mall Jakarta",area:"Central Jakarta",type:"active",gmv:689574712,sub:"mall",addr:"Jl. Rw. Jaya No.49, Rawasari, Kec. Cemp. Putih, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10570, Indonesia",lat:-6.1892,lng:106.872},
+  {id:37,name:"Lippo Plaza Kramat Jati Jakarta Timur",area:"East Jakarta",type:"active",gmv:279054000,sub:"mall",addr:"Lippo Plaza Jl. Raya Jakarta-Bogor No.Km 19, RT.14/RW.6, Kramat Jati, Kec. Kramat jati, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13510",lat:-6.282,lng:106.866},
+  {id:38,name:"Lippo Mall Cikarang",area:"Bekasi",type:"active",gmv:781851612,sub:"mall",addr:"Jl. MH. Thamrin, Cibatu, Cikarang Sel., Kabupaten Bekasi, Jawa Barat 17530, Indonesia",lat:-6.3148,lng:107.1474},
+  {id:39,name:"Arion Mall Jakarta Timur",area:"East Jakarta",type:"active",gmv:278525800,sub:"mall",addr:"Arion Mall Jl. Pemuda No.Kavling 3-4, RT.2/RW.7, Rawamangun, Kec. Pulo Gadung, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13220",lat:-6.1955,lng:106.8800},
+  {id:40,name:"Semper Av. Kramat Jaya Jakarta",area:"North Jakarta",type:"active",gmv:332205500,sub:"street",addr:"Jl. Kramat Jaya Raya No.29, RT.002/RW.017, Tugu Utara, Kec. Koja, Jkt Utara, Daerah Khusus Ibukota Jakarta 14270",lat:-6.1189,lng:106.8884},
+  {id:41,name:"Mal Ciputra Cibubur",area:"East Jakarta",type:"active",gmv:493331667,sub:"mall",addr:"Jl. Alternatif Cibubur No.KM, RT.005/RW.04, Jatikarya, Kec. Jatisampurna, Kota Bks, Jawa Barat 17435",lat:-6.3649,lng:106.8872},
+  {id:42,name:"Living Plaza Jababeka Bekasi",area:"Bekasi",type:"construction",sub:"mall",addr:"Living Plaza Jababeka, Jl. Niaga Raya LANTAI GF, Mekarmukti, Kec. Cikarang Utara, Kabupaten Bekasi, Jawa Barat 17550",lat:-6.3298,lng:107.173},
+  {id:43,name:"Bintaro Plaza Tangerang",area:"Tangerang Selatan",type:"active",gmv:521999200,sub:"mall",addr:"Jl. Bintaro Utama 3A No.81, Pd. Karya, Kec. Pd. Aren, Kota Tangerang Selatan, Banten 15225",lat:-6.2911,lng:106.685},
+  {id:44,name:"Av. Kelapa Dua Depok",area:"Depok",type:"active",gmv:163001950,sub:"street",addr:"Jl. Akses UI No.2, Tugu, Kec. Cimanggis, Kota Depok, Jawa Barat 16451",lat:-6.3525,lng:106.8104},
+  {id:45,name:"Plaza Pondok Gede Bekasi",area:"Bekasi",type:"active",gmv:165893667,sub:"mall",addr:"Jl. Raya Pd. Gede, RT.001/RW.001, Jatiwaringin, Kec. Pd. Gede, Kota Bks, Jawa Barat 17411",lat:-6.2872,lng:106.9302},
+  {id:46,name:"Mega Bekasi Hypermall Bekasi",area:"Bekasi",type:"active",gmv:246921500,sub:"mall",addr:"Mega Bekasi Hypermall Lt. 1 - Jl.Jenderal Ahmad Yani No. 1, Marga Jaya, Bekasi Selatan, Kota Bekasi, Jawa Barat 17141",lat:-6.244,lng:106.998},
+  {id:47,name:"Living World Cibubur",area:"East Jakarta",type:"active",gmv:665971725,sub:"mall",addr:"Living World Kota Wisata Lt. 2 Jl. Boulevard Kota Wisata, Ciangsana, Kec. Gn. Putri, Kabupaten Bogor, Jawa Barat 16968",lat:-6.371,lng:106.905},
+  {id:48,name:"Green Sedayu Mall Jakarta",area:"West Jakarta",type:"construction",sub:"mall",addr:"Green Sedayu Mall Lt 1 No.16, Jl. Taman Palem Lestari No 2 RT 07 / RW 13 Cengkareng Barat, Kecamatan Cengkareng, Kota Jakarta Barat DKI Jakarta 11730",lat:-6.141,lng:106.713},
+  {id:49,name:"Av. Tarum Barat Bekasi",area:"Bekasi",type:"active",gmv:41511000,sub:"street",addr:"Jl. Tapir VI No.1, Jayamukti, Kec. Cikarang Pusat, Kabupaten Bekasi, Jawa Barat 17530",lat:-6.3204,lng:107.1503},
+  {id:50,name:"Mal Atrium Senen Jakarta",area:"Central Jakarta",type:"construction",sub:"mall",addr:"Mall Atrium Senen Lt.GF Unit G-24, Jl. Senen Raya No.135, Senen, Kec. Senen, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10410",lat:-6.175,lng:106.8457},
+  {id:51,name:"Paramount Gading Serpong Tangerang",area:"Tangerang",type:"construction",sub:"street",addr:"Paramount Gading Serpong Ruko Madison Grande, J No.52, Medang, Pagedangan, Tangerang Regency, Banten 15334",lat:-6.219,lng:106.585},
+  {id:52,name:"AEON Mall Sentul City",area:"Bogor",type:"construction",sub:"mall",addr:"AEON Mall Sentul City, Lt2 Unit 28A & 28B, Jl. MH. Thamrin, Citaringgul, Kec. Babakan Madang, Kabupaten Bogor, Jawa Barat 16810",lat:-6.54,lng:106.835},
+  {id:53,name:"Av. Dr Soetomo Ciledug Tangerang",area:"Tangerang",type:"active",gmv:324272000,sub:"street",addr:"Jl. Dr. Soetomo No.17, RT.002/RW.009, Karang Tim., Kec. Ciledug, Kota Tangerang, Banten 15151",lat:-6.2312,lng:106.7312},
+  {id:54,name:"Av. Green Lake City Tangerang 2",area:"Tangerang",type:"construction",sub:"street",addr:"Jl. Green Lake City Boulevard No.58, RT.003/RW.009, Petir, Kec. Cipondoh, Kota Tangerang, Banten 15147",lat:-6.1602,lng:106.598},
+  {id:55,name:"Cibubur Junction",area:"East Jakarta",type:"construction",sub:"mall",addr:"Cibubur Junction L1-AE16B, Jl. Jambore No.1, RT.8/RW.7, Cibubur, Kec. Ciracas, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13720",lat:-6.352,lng:106.89},
+  {id:56,name:"Av. Moch Kahfi Jakarta",area:"South Jakarta",type:"construction",sub:"street",addr:"Kahfi Square, Ruko Jl. Moh. Kahfi 1 No.36C, Ciganjur, Kec. Jagakarsa, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12630",lat:-6.339,lng:106.8},
+  {id:57,name:"Grand Galaxy Park Bekasi",area:"Bekasi",type:"construction",sub:"mall",addr:"Grand Galaxy Park Lt 1 Unit 1-D8,Jl. Pulo Sirih Utama No.1, RT.003/RW.017, Jaka Setia, Kec. Bekasi Sel., Kota Bks, Jawa Barat 17147",lat:-6.2653,lng:107.0055},
+  {id:59,name:"Graha Raya Tangerang Selatan",area:"Tangerang Selatan",type:"construction",sub:"street",addr:"Jl. Boulevard Graha Raya No.7B Blok A8 No 21A, Paku Jaya, Kec. Serpong Utara, Kota Tangerang Selatan, Banten 15220",lat:-6.258,lng:106.643},
+  {id:60,name:"Av. Poris Tangerang",area:"Tangerang",type:"construction",sub:"street",addr:"Jl. Poris Indah, RT.003/RW.003, Poris Gaga, Kec. Batuceper, Kota Tangerang, Banten 15122",lat:-6.149,lng:106.624},
+  {id:61,name:"Av. Kutabumi Tangerang",area:"Tangerang",type:"construction",sub:"street",addr:"Jl. Raya Kutabumi No.5, RW.6, Kuta Baru, Kec. Ps. Kemis, Kabupaten Tangerang, Banten 15560",lat:-6.122,lng:106.582},
+  {id:62,name:"Av Merdeka Cimone Tangerang",area:"Tangerang",type:"active",gmv:11180000,sub:"street",addr:"Jl.Ruko Merdeka Cimone, Jl. Raya Merdeka No.101 ABC, RT.002/RW.001, Cimone Jaya, Kec. Karawaci, Kota Tangerang, Banten 15114",lat:-6.184,lng:106.612},
+  {id:63,name:"Av. Sawangan Depok",area:"Depok",type:"construction",sub:"street",addr:"Jl. Raya Bojongsari No.34, Bojongsari Lama, Kec. Bojongsari, Kota Depok, Jawa Barat 16516",lat:-6.436,lng:106.755},
+  {id:64,name:"Kalibata City Jakarta",area:"South Jakarta",type:"construction",sub:"mall",addr:"Kalibata City Square unit G-4100 lt GF, Jl. Raya Kalibata No.1, RT.9/RW.4, Rawajati, Kec. Pancoran, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12750",lat:-6.259,lng:106.846},
+  {id:65,name:"Av. Taman Galaxy Bekasi",area:"Bekasi",type:"construction",sub:"street",addr:"Jl. Taman Galaxy Raya No.9 blok h, RT.004/RW.014, Jaka Setia, Bekasi Selatan, Bekasi, West Java 17147",lat:-6.286,lng:107.01},
+  {id:66,name:"Av. Harapan Indah Bekasi",area:"Bekasi",type:"construction",sub:"street",addr:"Ruko Commercial Park, Jl. Taman Harapan Indah No.16 2.1, Pusaka Rakyat, Kec. Tarumajaya, Kabupaten Bekasi, Jawa Barat 17214",lat:-6.175,lng:106.982},
+  {id:67,name:"Grand Indonesia Mall Jakarta",area:"Central Jakarta",type:"active",gmv:81761000,sub:"mall",addr:"EAST MALL, Mall Grand Indonesia East Mall Lt.3A 30, Jl. M.H. Thamrin No.1, Kec. Menteng, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 10230",lat:-6.1952,lng:106.8204},
+  {id:68,name:"Eastvara BSD Tangerang",area:"Tangerang Selatan",type:"construction",sub:"mall",addr:"Zone DE Blok D21 & D22 Eastvara Mall, Jl. BSD Boulevard Utara, Cijantra, Kec. Pagedangan, Kabupaten Tangerang, Banten 15854",lat:-6.2975,lng:106.6595},
+  {id:69,name:"Senayan Park Jakarta",area:"Central Jakarta",type:"construction",sub:"mall",addr:"Jl. Gerbang Pemuda No.3, RT.1/RW.3, Gelora, Kecamatan Tanah Abang, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10270",lat:-6.2126,lng:106.8036},
+  {id:70,name:"The Park Pejaten Mall Jakarta",area:"South Jakarta",type:"construction",sub:"mall",addr:"The Park Pejaten Lt.2 - Jl. Warung Jati Barat No.39, RT.1/RW.5, Jati Padang, Ps. Minggu, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12540",lat:-6.2795,lng:106.8398},
+  {id:71,name:"Mall Bassura Jakarta",area:"East Jakarta",type:"construction",sub:"mall",addr:"Mall Bassura Lt. GF Unit RE/10 Jl. Jenderal Basuki Rachmat No.1A, RT.8/RW.10, Cipinang Besar Sel., Kecamatan Jatinegara, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13410",lat:-6.2177,lng:106.8814},
+  {id:72,name:"Av. Leuwiliang Bogor",area:"Bogor",type:"construction",sub:"street",addr:"Jl. Raya Cemplang No.KM.19, Dukuh, Kec. Cibungbulang, Kabupaten Bogor, Jawa Barat 16630",lat:-6.556,lng:106.631},
+  {id:73,name:"Buaran Plaza Jakarta",area:"East Jakarta",type:"construction",sub:"mall",addr:"Plaza Buaran Lt.GF, Jl. Radin Inten II, RT.8/RW.14, Klender, Kec. Duren Sawit, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13460",lat:-6.278,lng:106.913},
 ];
 
 const ES=[
-  {id:'E1',name:"ERAFONE MORE SEMPER",area:"North Jakarta",capa:1476,lat:-6.1189,lng:106.8884},
-  {id:'E2',name:"ERAFONE SUMMARECON MALL BEKASI",area:"Bekasi",capa:1360,lat:-6.2252,lng:107.0053},
-  {id:'E3',name:"ERAFONE KOTA KASABLANKA",area:"South Jakarta",capa:1153,lat:-6.231,lng:106.835},
-  {id:'E4',name:"ERAFONE 2 BOTANI SQUARE",area:"Bogor",capa:966,lat:-6.5881,lng:106.8018},
-  {id:'E5',name:"ERABLUE RE MARTADINATA",area:"Bekasi",capa:900,lat:-6.244,lng:107.02},
-  {id:'E6',name:"ERABLUE HOS COKROAMINOTO CILEDUG",area:"Tangerang",capa:900,lat:-6.2312,lng:106.715},
-  {id:'E7',name:"ERABLUE PLUMPANG SEMPER",area:"North Jakarta",capa:900,lat:-6.11,lng:106.88},
-  {id:'E8',name:"MEGASTORE CIBINONG CITY MALL",area:"Bogor",capa:893,lat:-6.5078,lng:106.8424},
-  {id:'E9',name:"MEGASTORE BINTARO X-CHANGE",area:"Tangerang Selatan",capa:814,lat:-6.2847,lng:106.6925},
-  {id:'E10',name:"ERABLUE RAYA KUTABUMI",area:"Tangerang",capa:800,lat:-6.122,lng:106.582},
-  {id:'E11',name:"MEGASTORE RUKO CILEDUG",area:"Tangerang",capa:723,lat:-6.22,lng:106.72},
-  {id:'E12',name:"ERABLUE DURI KOSAMBI JAKBAR",area:"West Jakarta",capa:700,lat:-6.164,lng:106.725},
-  {id:'E13',name:"MEGASTORE SUMMARECON MAL SERPONG",area:"Tangerang Selatan",capa:688,lat:-6.2414,lng:106.6335},
-  {id:'E14',name:"ERABLUE RAWA BELONG JAKBAR",area:"West Jakarta",capa:680,lat:-6.192,lng:106.76},
-  {id:'E15',name:"MEGASTORE CENTRAL PARK",area:"West Jakarta",capa:653,lat:-6.1779,lng:106.7908},
-  {id:'E16',name:"ERAFONE DAAN MOGOT MALL",area:"West Jakarta",capa:643,lat:-6.158,lng:106.731},
-  {id:'E17',name:"MEGASTORE MAL KELAPA GADING 2",area:"North Jakarta",capa:640,lat:-6.1576,lng:106.9031},
-  {id:'E18',name:"ERAFONE AEON JAKARTA GARDEN CITY",area:"East Jakarta",capa:633,lat:-6.253,lng:106.978},
-  {id:'E19',name:"ERABLUE CURUG RAYA TANGERANG",area:"Tangerang",capa:630,lat:-6.165,lng:106.55},
-  {id:'E20',name:"ERABLUE RADEN SALEH CILEDUG",area:"Tangerang",capa:625,lat:-6.225,lng:106.71},
-  {id:'E21',name:"MEGASTORE MARGO CITY 1 DEPOK",area:"Depok",capa:611,lat:-6.3748,lng:106.8271},
-  {id:'E22',name:"ERABLUE SILIWANGI PAMULANG",area:"Tangerang Selatan",capa:600,lat:-6.334,lng:106.72},
-  {id:'E23',name:"ERAFONE CIPUTRA CITRARAYA TANGERANG",area:"Tangerang",capa:581,lat:-6.18,lng:106.56},
-  {id:'E24',name:"ERAFONE TANGERANG CITY MALL",area:"Tangerang",capa:580,lat:-6.1787,lng:106.6409},
-  {id:'E25',name:"ERAFONE RUKO BOSIH RAYA CIBITUNG",area:"Bekasi",capa:567,lat:-6.27,lng:107.105},
-  {id:'E26',name:"ERAFONE RUKO KEBON JERUK BINUS",area:"West Jakarta",capa:566,lat:-6.19,lng:106.77},
-  {id:'E27',name:"ERAFONE PX PAVILION ST MORITS",area:"West Jakarta",capa:553,lat:-6.1832,lng:106.7535},
-  {id:'E28',name:"MEGASTORE PLAZA JAMBU 2",area:"Bogor",capa:551,lat:-6.5982,lng:106.7923},
-  {id:'E29',name:"ERABLUE KEADILAN RAYA DEPOK",area:"Depok",capa:550,lat:-6.42,lng:106.82},
-  {id:'E30',name:"ERABLUE KH. AGUS SALIM BEKASI",area:"Bekasi",capa:550,lat:-6.238,lng:106.992},
-  {id:'E31',name:"ERABLUE MT. HARYONO BEKASI",area:"Bekasi",capa:550,lat:-6.25,lng:107.015},
-  {id:'E32',name:"ERABLUE PUSPITEK TANGERANG",area:"Tangerang Selatan",capa:550,lat:-6.362,lng:106.662},
-  {id:'E33',name:"ERAFONE BUARAN PLAZA",area:"East Jakarta",capa:538,lat:-6.278,lng:106.913},
-  {id:'E34',name:"ERAFONE 1 SUPERMALL KARAWACI",area:"Tangerang",capa:519,lat:-6.1787,lng:106.6269},
-  {id:'E35',name:"MEGASTORE SUPERMAL KARAWACI",area:"Tangerang",capa:513,lat:-6.179,lng:106.633},
-  {id:'E36',name:"ERAFONE RUKO AHMAD YANI SERANG",area:"Banten",capa:506,lat:-6.12,lng:106.16},
-  {id:'E37',name:"ERAFONE RUKO TELUK GONG",area:"North Jakarta",capa:505,lat:-6.11,lng:106.79},
-  {id:'E38',name:"MEGASTORE RUKO CIKARANG JABABEKA",area:"Bekasi",capa:502,lat:-6.3298,lng:107.173},
-  {id:'E39',name:"ERAFONE RUKO BANTAR GEBANG",area:"Bekasi",capa:484,lat:-6.364,lng:107.01},
-  {id:'E40',name:"ERAFONE 3 MEGA BEKASI HYPERMALL",area:"Bekasi",capa:482,lat:-6.244,lng:106.998},
-  {id:'E41',name:"ERAFONE GANDARIA CITY",area:"South Jakarta",capa:475,lat:-6.244,lng:106.7801},
-  {id:'E42',name:"ERABLUE MAUK TANGERANG",area:"Tangerang",capa:470,lat:-6.18,lng:106.515},
-  {id:'E43',name:"ERAFONE RUKO MOCH KAHFI",area:"South Jakarta",capa:466,lat:-6.339,lng:106.8},
-  {id:'E44',name:"ERAFONE MAL PURI INDAH",area:"West Jakarta",capa:454,lat:-6.182,lng:106.728},
-  {id:'E45',name:"MEGASTORE PONDOK INDAH MALL",area:"South Jakarta",capa:453,lat:-6.264,lng:106.784},
-  {id:'E46',name:"ERABLUE SAWANGAN DEPOK",area:"Depok",capa:450,lat:-6.436,lng:106.755},
-  {id:'E47',name:"ERAFONE AEON MAL BSD CITY",area:"Tangerang Selatan",capa:440,lat:-6.3012,lng:106.6541},
-  {id:'E48',name:"ERAFONE CILEGON CENTER MALL",area:"Banten",capa:435,lat:-6.0025,lng:106.0461},
-  {id:'E49',name:"ERAFONE PLAZA BINTARO JAYA",area:"Tangerang Selatan",capa:423,lat:-6.2911,lng:106.685},
-  {id:'E50',name:"ERAFONE 2.5 REFURBISH MAL ARTHA GADING",area:"North Jakarta",capa:418,lat:-6.1494,lng:106.918},
-  {id:'E51',name:"ERAFONE 2.5 GRAND INDONESIA",area:"Central Jakarta",capa:406,lat:-6.1937,lng:106.8218},
-  {id:'E52',name:"ERAFONE EMPORIUM PLUIT MALL",area:"North Jakarta",capa:406,lat:-6.1234,lng:106.7947},
-  {id:'E53',name:"ERAFONE BINTARO EXCHANGE II",area:"Tangerang Selatan",capa:392,lat:-6.2897,lng:106.687},
-  {id:'E54',name:"MEGASTORE RUKO PERUMNAS BEKASI",area:"Bekasi",capa:387,lat:-6.238,lng:107.005},
-  {id:'E55',name:"ERAFONE MALL OF SERANG",area:"Banten",capa:381,lat:-6.1124,lng:106.1528},
-  {id:'E56',name:"ERAFONE FRANCHISE SUMUR BATU KEMAYORAN",area:"Central Jakarta",capa:380,lat:-6.15,lng:106.855},
-  {id:'E57',name:"MEGASTORE RUKO KEMANG",area:"South Jakarta",capa:376,lat:-6.261,lng:106.813},
-  {id:'E58',name:"ERAFONE AEON TANJUNG BARAT",area:"South Jakarta",capa:375,lat:-6.3185,lng:106.8252},
-  {id:'E59',name:"ERAFONE ARION MALL",area:"East Jakarta",capa:367,lat:-6.2216,lng:106.8917},
-  {id:'E60',name:"ERAFONE MAL TAMAN ANGGREK",area:"West Jakarta",capa:360,lat:-6.1782,lng:106.7878},
-  {id:'E61',name:"MEGASTORE MAL METROPOLITAN",area:"Bekasi",capa:342,lat:-6.3908,lng:106.9882},
-  {id:'E62',name:"ERAFONE TEBET JAKARTA SELATAN",area:"South Jakarta",capa:340,lat:-6.22,lng:106.85},
-  {id:'E63',name:"ERAFONE PANTAI INDAH KAPUK MALL",area:"North Jakarta",capa:338,lat:-6.112,lng:106.745},
-  {id:'E64',name:"ERAFONE THE PARK MALL SAWANGAN",area:"Depok",capa:335,lat:-6.4198,lng:106.7382},
-  {id:'E65',name:"ERAFONE RUKO SURYA KENCANA PAMULANG",area:"Tangerang Selatan",capa:329,lat:-6.349,lng:106.73},
+  {id:'E1',name:"ERAFONE MORE SEMPER",area:"North Jakarta",capa:1476,sub:"mall",lat:-6.1189,lng:106.8884},
+  {id:'E2',name:"ERAFONE SUMMARECON MALL BEKASI",area:"Bekasi",capa:1360,addr:"Summarecon Mall Bekasi Blok M Lantai GF No. 117-118, Jl Boulevard Ahmad Yani RT.006/RW.002, Marga Mulya, Kec. Bekasi Utara, Kota Bks, Jawa Barat 17142",sub:"mall",lat:-6.2252,lng:107.0053},
+  {id:'E3',name:"ERAFONE KOTA KASABLANKA",area:"South Jakarta",capa:1153,addr:"Kota Kasablanka Lantai LG unit 47, Jl. Casablanca No.88, RW.5, Menteng Dalam, Kec. Tebet, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12870",sub:"mall",lat:-6.231,lng:106.835},
+  {id:'E4',name:"ERAFONE 2 BOTANI SQUARE",area:"Bogor",capa:966,addr:"Botani Square Bogor Lt. 2 Jl. Raya Pajajaran, RT.04/RW.05, Tegallega, Kecamatan Bogor Tengah, Kota Bogor, Jawa Barat 16127",sub:"mall",lat:-6.5881,lng:106.8018},
+  {id:'E5',name:"ERABLUE RE MARTADINATA",area:"Bekasi",capa:900,sub:"mall",lat:-6.244,lng:107.02},
+  {id:'E6',name:"ERABLUE HOS COKROAMINOTO CILEDUG",area:"Tangerang",capa:900,addr:"Jln. HOS Cokroaminoto No. 29 RT. 002 RW. 004, Karang Timur, Karang Tengah, Ciledug, Tangerang",sub:"mall",lat:-6.2312,lng:106.715},
+  {id:'E7',name:"ERABLUE PLUMPANG SEMPER",area:"North Jakarta",capa:900,sub:"mall",lat:-6.11,lng:106.88},
+  {id:'E8',name:"MEGASTORE CIBINONG CITY MALL",area:"Bogor",capa:893,addr:"Cibinong City Mall Lantai LG No. 05 Jalan Raya Tegar Beriman Cibinong, Bogor, Pakansari, Cibinong, Bogor, Jawa Barat 16414",sub:"mall",lat:-6.4816,lng:106.8535},
+  {id:'E9',name:"MEGASTORE BINTARO X-CHANGE",area:"Tangerang Selatan",capa:814,addr:"Mall Bintaro Xchange Lantai Ground Unit. 125-126, Boulevard Bintaro Jaya Blok O-2, Bintaro Jaya Sektor VII, Pd. Jaya, Pd. Aren, Kota Tangerang Selatan",sub:"mall",lat:-6.2847,lng:106.6925},
+  {id:'E10',name:"ERABLUE RAYA KUTABUMI",area:"Tangerang",capa:800,sub:"mall",lat:-6.122,lng:106.582},
+  {id:'E11',name:"MEGASTORE RUKO CILEDUG",area:"Tangerang",capa:723,addr:"Jl. Ciledug Raya No. 30 RT.006/RW.002, Petukangan Utara, Kec. Pesanggrahan, Kota Tangerang, Banten 15156",sub:"street",lat:-6.22,lng:106.72},
+  {id:'E12',name:"ERABLUE DURI KOSAMBI JAKBAR",area:"West Jakarta",capa:700,sub:"mall",lat:-6.164,lng:106.725},
+  {id:'E13',name:"MEGASTORE SUMMARECON MAL SERPONG",area:"Tangerang Selatan",capa:688,addr:"Summarecon Mall Serpong Lantai GF No. 22, Jalan Gading Serpong Boulevard No.1, No.2 F, Pakulonan Bar., Kec. Klp. Dua, Tangerang, Banten 15810",sub:"mall",lat:-6.2414,lng:106.6335},
+  {id:'E14',name:"ERABLUE RAWA BELONG JAKBAR",area:"West Jakarta",capa:680,sub:"mall",lat:-6.192,lng:106.76},
+  {id:'E15',name:"MEGASTORE CENTRAL PARK",area:"West Jakarta",capa:653,addr:"Central Park, Lantai 1, No. 102, Jl. Letjen S. Parman No.28, RT.12/RW.1, Tj. Duren Sel., Kec. Grogol petamburan, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11470",sub:"mall",lat:-6.1779,lng:106.7908},
+  {id:'E16',name:"ERAFONE DAAN MOGOT MALL",area:"West Jakarta",capa:643,addr:"Mall Matahari Daan Mogot Lantai 1 No. 24, Jalan Tampak Siring 1 8 12, RT.8/RW.12, Kalideres, Kec. Kalideres, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11840",sub:"mall",lat:-6.158,lng:106.731},
+  {id:'E17',name:"MEGASTORE MAL KELAPA GADING 2",area:"North Jakarta",capa:640,addr:"Mall Kelapa Gading 5 Lt. Dasar #G-69 Jl. Boulevard Raya No.13, RW.18, Klp. Gading Tim., Kec. Klp. Gading, Kota Jkt Utara, Daerah Khusus Ibukota Jakarta 14240",sub:"mall",lat:-6.1576,lng:106.9031},
+  {id:'E18',name:"ERAFONE AEON JAKARTA GARDEN CITY",area:"East Jakarta",capa:633,addr:"AEON Mall Jakarta Garden City Lantai 2, Jl. Jkt Garden City Boulevard No.1, RT.1/RW.6, Cakung Tim., Kec. Cakung, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13910",sub:"mall",lat:-6.253,lng:106.978},
+  {id:'E19',name:"ERABLUE CURUG RAYA TANGERANG",area:"Tangerang",capa:630,sub:"mall",lat:-6.165,lng:106.55},
+  {id:'E20',name:"ERABLUE RADEN SALEH CILEDUG",area:"Tangerang",capa:625,addr:"Jl. Raden Saleh Gg. Arrahman No. 17, Rt 002/Rw. 004, Karang Tengah, Kecamatan Karang Tengah, Kota Tangerang, Banten 15157",sub:"mall",lat:-6.225,lng:106.71},
+  {id:'E21',name:"MEGASTORE MARGO CITY 1 DEPOK",area:"Depok",capa:611,sub:"mall",lat:-6.3748,lng:106.8271},
+  {id:'E22',name:"ERABLUE SILIWANGI PAMULANG",area:"Tangerang Selatan",capa:600,sub:"mall",lat:-6.334,lng:106.72},
+  {id:'E23',name:"ERAFONE CIPUTRA CITRARAYA TANGERANG",area:"Tangerang",capa:581,addr:"Jalan Citra Raya Boulevard No.01 Ciakar, Mall Citra Raya Lt 3 No C01-02, Tangerang, Banten, 15710",sub:"mall",lat:-6.1706,lng:106.6337},
+  {id:'E24',name:"ERAFONE TANGERANG CITY MALL",area:"Tangerang",capa:580,addr:"Tangerang City Mall Lantai LG, Jl. Jenderal Sudirman No.1, RT.001/RW.005, Babakan, Kec. Tangerang, Kota Tangerang, Banten 15117",sub:"mall",lat:-6.1787,lng:106.6409},
+  {id:'E25',name:"ERAFONE RUKO BOSIH RAYA CIBITUNG",area:"Bekasi",capa:567,sub:"street",lat:-6.27,lng:107.105},
+  {id:'E26',name:"ERAFONE RUKO KEBON JERUK BINUS",area:"West Jakarta",capa:566,addr:"Jl. Rw. Belong No.35, RT.2/RW.15, Kb. Jeruk, Kec. Palmerah, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11480",sub:"street",lat:-6.19,lng:106.77},
+  {id:'E27',name:"ERAFONE PX PAVILION ST MORITS",area:"West Jakarta",capa:553,addr:"Lippo Mall Puri Lantai 1 No. 71-72, Jl Kembangan, RT.3/RW.2, Kembangan Sel., Kec. Kembangan, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11610",sub:"mall",lat:-6.1832,lng:106.7535},
+  {id:'E28',name:"MEGASTORE PLAZA JAMBU 2",area:"Bogor",capa:551,addr:"Plaza Jambu Dua Lt.1 Blok BI, Jl. Jend Ahmad Yani RT.01/RW.06, Bantarjati, Bogor, Kota Bogor, Jawa Barat 16153",sub:"mall",lat:-6.5982,lng:106.7923},
+  {id:'E29',name:"ERABLUE KEADILAN RAYA DEPOK",area:"Depok",capa:550,sub:"mall",lat:-6.42,lng:106.82},
+  {id:'E30',name:"ERABLUE KH. AGUS SALIM BEKASI",area:"Bekasi",capa:550,sub:"mall",lat:-6.238,lng:106.992},
+  {id:'E31',name:"ERABLUE MT. HARYONO BEKASI",area:"Bekasi",capa:550,sub:"mall",lat:-6.25,lng:107.015},
+  {id:'E32',name:"ERABLUE PUSPITEK TANGERANG",area:"Tangerang Selatan",capa:550,sub:"mall",lat:-6.362,lng:106.662},
+  {id:'E33',name:"ERAFONE BUARAN PLAZA",area:"East Jakarta",capa:538,addr:"Buaran Plaza Lantai GF Blok A 03 No. 177, Jl. Taman Buaran Indah 1 No.Dalam, RT.8/RW.14, Klender, Kec. Duren Sawit, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13470",sub:"mall",lat:-6.278,lng:106.913},
+  {id:'E34',name:"ERAFONE 1 SUPERMALL KARAWACI",area:"Tangerang",capa:519,addr:"Supermal Karawaci Lantai 1 Unit FF 51-52 105. Jl. Boulevard Diponegoro No.105, Bencongan, Kec. Klp. Dua, Kota Tangerang, Banten 15811",sub:"mall",lat:-6.1787,lng:106.6269},
+  {id:'E35',name:"MEGASTORE SUPERMAL KARAWACI",area:"Tangerang",capa:513,addr:"Supermal Karawaci Lantai 1 Unit FF 51-52 105. Jl. Boulevard Diponegoro No.105, Bencongan, Kec. Klp. Dua, Kota Tangerang, Banten 15811",sub:"mall",lat:-6.179,lng:106.633},
+  {id:'E36',name:"ERAFONE RUKO AHMAD YANI SERANG",area:"Banten",capa:506,addr:"Jl. Jendral Ahmad Yani No.104 RT RW 001/002 Sumurpecung, Kec. Serang, Kota Serang, Banten 42117",sub:"street",lat:-6.12,lng:106.16},
+  {id:'E37',name:"ERAFONE RUKO TELUK GONG",area:"North Jakarta",capa:505,addr:"Jl. Teluk Gong Raya No.35A, RW.8, Pejagalan, Kec. Penjaringan, Kota Jkt Utara, Daerah Khusus Ibukota Jakarta 14450",sub:"street",lat:-6.11,lng:106.79},
+  {id:'E38',name:"MEGASTORE RUKO CIKARANG JABABEKA",area:"Bekasi",capa:502,addr:"Jl. Kasuari Raya Blok A 21-22, Mekarmukti, Cikarang Utara, Kab. Bekasi, Jawa Barat 17530",sub:"street",lat:-6.3011,lng:107.1568},
+  {id:'E39',name:"ERAFONE RUKO BANTAR GEBANG",area:"Bekasi",capa:484,addr:"Jl. H Djole RT 001/ RW 009, Kel. Bantar gebang , Kec.Bantar gebang, Kota Bekasi",sub:"street",lat:-6.364,lng:107.01},
+  {id:'E40',name:"ERAFONE 3 MEGA BEKASI HYPERMALL",area:"Bekasi",capa:482,addr:"Mega Bekasi Giant Hypermall Lt 1 No. 178 Jl. Jend. Ahmad Yani RT.004/RW.001, Marga Jaya, Bekasi Selatan, Bekasi City, West Java 17144",sub:"mall",lat:-6.244,lng:106.998},
+  {id:'E41',name:"ERAFONE GANDARIA CITY",area:"South Jakarta",capa:475,addr:"Mall Gandaria City Lt. 1 No. 186, Jl. Sultan Iskandar Muda, RT.10/RW.6, Kby. Lama Utara, Kec. Kby. Lama, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12240",sub:"mall",lat:-6.244,lng:106.7801},
+  {id:'E42',name:"ERABLUE MAUK TANGERANG",area:"Tangerang",capa:470,sub:"mall",lat:-6.18,lng:106.515},
+  {id:'E43',name:"ERAFONE RUKO MOCH KAHFI",area:"South Jakarta",capa:466,addr:"Jl. Moh. Kahfi 1 No.1, RT.015/RW.1, Cipedak, Kec. Jagakarsa, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12630",sub:"street",lat:-6.339,lng:106.8},
+  {id:'E44',name:"ERAFONE MAL PURI INDAH",area:"West Jakarta",capa:454,addr:"Puri Indah Mall Lantai 2, Jl. Puri Agung, RT.1/RW.2, Kembangan Sel., Kec. Kembangan, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11610",sub:"mall",lat:-6.182,lng:106.728},
+  {id:'E45',name:"MEGASTORE PONDOK INDAH MALL",area:"South Jakarta",capa:453,addr:"Mal Pondok Indah 1 Lt. Dasar No. 039C, Jalan Metro Pondok Indah Kav. IV, RT.1/RW.16, Pd. Pinang, Kec. Kby. Lama, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12310",sub:"mall",lat:-6.264,lng:106.784},
+  {id:'E46',name:"ERABLUE SAWANGAN DEPOK",area:"Depok",capa:450,sub:"mall",lat:-6.436,lng:106.755},
+  {id:'E47',name:"ERAFONE AEON MAL BSD CITY",area:"Tangerang Selatan",capa:440,addr:"AEON Mal BSD City Lantai 3 LOT 3-15 Jl. Grand Boulevard BSD City Pagedangan, Kec. Pagedangan, Tangerang, Banten 15345",sub:"mall",lat:-6.3012,lng:106.6541},
+  {id:'E48',name:"ERAFONE CILEGON CENTER MALL",area:"Banten",capa:435,addr:"Cilegon Center Mall Lt 1 No. 14 , Jl. Ahmad Yani No. 11 Sukmajaya, Kec. Jombang, Kota Cilegon, Banten 42416",sub:"mall",lat:-6.0025,lng:106.0461},
+  {id:'E49',name:"ERAFONE PLAZA BINTARO JAYA",area:"Tangerang Selatan",capa:423,addr:"Plaza Bintaro Jaya Lantai 1 No. 12A Jl. Bintaro Utama Sektor 3-A, Pd. Karya, Pd. Aren, Kota Tangerang Selatan, Banten 15225",sub:"mall",lat:-6.2911,lng:106.685},
+  {id:'E50',name:"ERAFONE 2.5 REFURBISH MAL ARTHA GADING",area:"North Jakarta",capa:418,addr:"Mall Artha Gading Lantai GF Blok A2 No. 22-23, Jl. Artha Gading Sel. No.1, RT.18/RW.8, Klp. Gading Bar., Kec. Klp. Gading, Kota Jkt Utara, Daerah Khusus Ibukota Jakarta 14240",sub:"mall",lat:-6.1494,lng:106.918},
+  {id:'E51',name:"ERAFONE 2.5 GRAND INDONESIA",area:"Central Jakarta",capa:406,addr:"Grand Indonesia Lt 3 East Mall, Jl. M.H. Thamrin No.1, Menteng, Kec. Menteng, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10310",sub:"mall",lat:-6.1952,lng:106.8204},
+  {id:'E52',name:"ERAFONE EMPORIUM PLUIT MALL",area:"North Jakarta",capa:406,addr:"Emporium Pluit Mall Lt. 2 No. 2-40, Jl. Pluit Selatan Raya No.1, RT.23/RW.8, Penjaringan, Kec. Penjaringan, Kota Jkt Utara, Daerah Khusus Ibukota Jakarta 14440",sub:"mall",lat:-6.1234,lng:106.7947},
+  {id:'E53',name:"ERAFONE BINTARO EXCHANGE II",area:"Tangerang Selatan",capa:392,addr:"Mall Bintaro Xchange Lantai Ground Unit. 125-126, Boulevard Bintaro Jaya Blok O-2, Bintaro Jaya Sektor VII, Pd. Jaya, Pd. Aren, Kota Tangerang Selatan",sub:"mall",lat:-6.2897,lng:106.687},
+  {id:'E54',name:"MEGASTORE RUKO PERUMNAS BEKASI",area:"Bekasi",capa:387,addr:"Jl. Nusantara Raya, RT.007/RW.011, Aren Jaya, Kec. Bekasi Tim., Kota Bks, Jawa Barat 17111",sub:"street",lat:-6.238,lng:107.005},
+  {id:'E55',name:"ERAFONE MALL OF SERANG",area:"Banten",capa:381,addr:"Mall of Serang Lantai 1 No. 20, Jl. Akses Tol Serang Tim., Panancangan, Kec. Cipocok Jaya, Kota Serang, Banten 42124",sub:"mall",lat:-6.1124,lng:106.1528},
+  {id:'E56',name:"ERAFONE FRANCHISE SUMUR BATU KEMAYORAN",area:"Central Jakarta",capa:380,sub:"street",lat:-6.15,lng:106.855},
+  {id:'E57',name:"MEGASTORE RUKO KEMANG",area:"South Jakarta",capa:376,addr:"Jl. Kemang Raya No.95D, RT.1/RW.2, Bangka, Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12730",sub:"street",lat:-6.261,lng:106.813},
+  {id:'E58',name:"ERAFONE AEON TANJUNG BARAT",area:"South Jakarta",capa:375,sub:"mall",lat:-6.3185,lng:106.8252},
+  {id:'E59',name:"ERAFONE ARION MALL",area:"East Jakarta",capa:367,addr:"Arion Mall Lt. GF Unit 106A Jl. Pemuda Kav.3-4 RT.2/RW.7, Rawamangun, Kec. Pulo Gadung, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13220",sub:"mall",lat:-6.2216,lng:106.8917},
+  {id:'E60',name:"ERAFONE MAL TAMAN ANGGREK",area:"West Jakarta",capa:360,addr:"Mall Taman Anggrek Lt. 3 No. E05,E06,E07 Jl. Letjen S. Parman St No.28, RT.12/RW.1, Tomang, Grogol petamburan, West Jakarta City, Jakarta 11440",sub:"mall",lat:-6.1782,lng:106.7878},
+  {id:'E61',name:"MEGASTORE MAL METROPOLITAN",area:"Bekasi",capa:342,addr:"Mall Metropolitan Bekasi Lt 3 No. 3,4,5,6,7,8,9 Jl. KH. Noer Ali, RT.008/RW.002, Pekayon Jaya, Kec. Bekasi Sel., Kota Bks, Jawa Barat 17148",sub:"mall",lat:-6.2608,lng:106.9885},
+  {id:'E62',name:"ERAFONE TEBET JAKARTA SELATAN",area:"South Jakarta",capa:340,sub:"mall",lat:-6.22,lng:106.85},
+  {id:'E63',name:"ERAFONE PANTAI INDAH KAPUK MALL",area:"North Jakarta",capa:338,addr:"Mall PIK Avenue Lt. 2 No. 13C, Jl. Pantai Indah Kapuk No.6, RW.2, Kamal Muara, Kec. Penjaringan, Kota Jkt Utara, Daerah Khusus Ibukota Jakarta 14470",sub:"mall",lat:-6.112,lng:106.745},
+  {id:'E64',name:"ERAFONE THE PARK MALL SAWANGAN",area:"Depok",capa:335,addr:"Jl.Serua,Kec.Bojongsari,Sawangan Kota & Kode POS :Depok, Jawa Barat 16517",sub:"mall",lat:-6.4198,lng:106.7382},
+  {id:'E65',name:"ERAFONE RUKO SURYA KENCANA PAMULANG",area:"Tangerang Selatan",capa:329,addr:"Jl. Surya Kencana No.60, Pamulang Bar., Kec. Pamulang, Kota Tangerang Selatan, Banten 15417",sub:"street",lat:-6.349,lng:106.73},
+  {id:'E66',name:"ERAFONE TRANS STUDIO MALL CIBUBUR",area:"Depok",capa:300,addr:"TSM Cibubur Second Floor L2-52 Jl. Alternatif Cibubur No. 230 Harjamukti, Cimanggis, Kota Depok, Jawa Barat 16454",sub:"mall",lat:-6.3805,lng:106.9102},
+  {id:'E67',name:"ERAFONE CIBUBUR JUNCTION",area:"East Jakarta",capa:158,addr:"Cibubur Junction Lantai 2, Jl. Jambore No 1, Cibubur, Ciracas, RT.8/RW.7, Cibubur, Kec. Ciracas, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13720",sub:"mall",lat:-6.352,lng:106.89},
+  {id:'E68',name:"ERAFONE AEON MALL SENTUL CITY",area:"Bogor",capa:212,addr:"AEON Mall Sentul City, Bogor",sub:"mall",lat:-6.54,lng:106.835},
+  {id:'E69',name:"ERAFONE KUTABUMI TANGERANG",area:"Tangerang",capa:150,sub:"mall",lat:-6.122,lng:106.582},
+  {id:'E70',name:"ERAFONE PORIS TANGERANG",area:"Tangerang",capa:232,sub:"mall",lat:-6.149,lng:106.624},
+  {id:'E71',name:"ERAFONE AND MORE EASTVARA MALL",area:"Tangerang Selatan",capa:150,sub:"mall",lat:-6.2975,lng:106.6595},
+  {id:'E72',name:"ERAFONE SENAYAN PARK MALL",area:"Central Jakarta",capa:150,addr:"Senayan Park Mall, Jln. Gerbang Pemuda No. 3 RT. 1 RW. 3, Gelora Kec. Tanah Abang Jakarta Pusat 10270",sub:"mall",lat:-6.2126,lng:106.8036},
 ];
 
 // ── MAP ──
-const map=L.map('map',{center:[-6.25,106.82],zoom:10,zoomControl:false});
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:18}).addTo(map);
-L.control.zoom({position:'bottomleft'}).addTo(map);
-const LG={active:L.layerGroup(),construction:L.layerGroup(),erafone:L.layerGroup(),gaps:L.layerGroup()};
-Object.values(LG).forEach(g=>g.addTo(map));
+let map,LG,MK={},gapLayers=[],eraRings={};
+let curR=2,selId=null,curPanel='stores';
 const LV={active:true,construction:true,erafone:true,gaps:true};
-const MK={};
-let gapLayers=[];
-let eraRings={};
-let curR=3,selId=null;
 
+function fmtRp(v){if(v==null)return null;if(v>=1e9)return 'Rp '+(v/1e9).toFixed(2)+'M';return 'Rp '+Math.round(v/1e6).toLocaleString()+'jt';}
 function hav(a,b,c,d){const R=6371,dL=(c-a)*Math.PI/180,dN=(d-b)*Math.PI/180,x=Math.sin(dL/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dN/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
 
 function eraCol(c){return c>=900?'#EF4444':c>=600?'#F97316':'#EAB308';}
@@ -355,34 +361,53 @@ function mkEIcon(e){
   return L.divIcon({html:`<div style="width:26px;height:32px;"><div style="width:26px;height:26px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${c};display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.5);border:2px solid rgba(255,255,255,.25);"><span style="transform:rotate(45deg);font-size:7px;font-weight:700;color:#fff;">ERA</span></div><div style="width:5px;height:5px;border-radius:50%;background:${c};opacity:.4;margin:2px auto 0;"></div></div>`,className:'',iconSize:[26,32],iconAnchor:[13,30],popupAnchor:[0,-24]});
 }
 
-function xPop(s){const c=s.type==='active'?'var(--orange)':'var(--construction)';const l=s.type==='active'?'✅ Active Store':'🔨 Under Construction';const ps=s.type==='active'?'ps-active':'ps-construction';return`<div class="pu"><div class="pu-tag" style="color:${c}">Xiaomi #${s.id}</div><div class="pu-name">${s.name}</div><div class="pu-area">📍 ${s.area}</div><span class="pu-status ${ps}"><div class="pdot" style="background:${s.type==='active'?'#22C55E':'#F59E0B'}"></div>${l}</span></div>`;}
+function mapLinks(lat,lng,addr){
+  const q = addr ? encodeURIComponent(addr) : `${lat},${lng}`;
+  const gm=`https://www.google.com/maps/search/?api=1&query=${q}`;
+  // Street View is only offered when we have a real, confirmed address — forcing a panorama at an
+  // approximate/estimated coordinate is what was causing blank/black or wrong-location results.
+  const sv=`https://www.google.com/maps?layer=c&cbll=${lat},${lng}`;
+  const gmBtn=`<a href="${gm}" target="_blank" rel="noopener noreferrer" onclick="window.open('${gm}','_blank');return false;" style="flex:1;text-align:center;background:var(--bg4);color:var(--text);text-decoration:none;font-size:9px;font-weight:600;padding:6px 4px;border-radius:5px;">📍 Google Maps</a>`;
+  const svBtn=addr?`<a href="${sv}" target="_blank" rel="noopener noreferrer" onclick="window.open('${sv}','_blank');return false;" style="flex:1;text-align:center;background:var(--bg4);color:var(--text);text-decoration:none;font-size:9px;font-weight:600;padding:6px 4px;border-radius:5px;">🧭 Street View</a>`:'';
+  const note = addr
+    ? '<div style="font-size:8px;color:var(--text3);margin-top:4px;">Street View may still be blank if Google hasn\'t driven this street.</div>'
+    : '<div style="font-size:8px;color:var(--text3);margin-top:4px;">⚠ No confirmed address — pin is approximate, Street View hidden to avoid showing the wrong spot.</div>';
+  return `<div style="display:flex;gap:6px;margin-top:8px;">${gmBtn}${svBtn}</div>${note}`;
+}
+function subBadge(sub){
+  return sub==='street'
+    ? `<span class="badge" style="background:rgba(163,230,53,.12);color:#A3E635;border:1px solid rgba(163,230,53,.2);">🛣 Street</span>`
+    : `<span class="badge" style="background:rgba(96,165,250,.12);color:#60A5FA;border:1px solid rgba(96,165,250,.2);">🏬 Mall</span>`;
+}
+function xPop(s){const c=s.type==='active'?'var(--orange)':'var(--construction)';const l=s.type==='active'?'✅ Active Store':'🔨 Under Construction';const ps=s.type==='active'?'ps-active':'ps-construction';const gmvRow=s.gmv?`<div class="pu-row"><span class="pu-lbl">Avg Monthly GMV</span><span class="pu-val" style="color:var(--orange)">${fmtRp(s.gmv)}/mo</span></div>`:'';return`<div class="pu"><div class="pu-tag" style="color:${c}">Xiaomi #${s.id}</div><div class="pu-name">${s.name}</div><div class="pu-area">📍 ${s.area} &nbsp;${subBadge(s.sub)}</div>${gmvRow}<span class="pu-status ${ps}"><div class="pdot" style="background:${s.type==='active'?'#22C55E':'#F59E0B'}"></div>${l}</span>${mapLinks(s.lat,s.lng,s.addr)}</div>`;}
 
-function ePop(e){const c=eraCol(e.capa);const tier=e.capa>=900?'Very High':e.capa>=600?'High':'Mid';const near=XS.filter(x=>x.type==='active').map(x=>({...x,d:hav(e.lat,e.lng,x.lat,x.lng)})).sort((a,b)=>a.d-b.d)[0];return`<div class="pu"><div class="pu-tag" style="color:${c}">Erafone · ${tier} Capacity</div><div class="pu-name">${e.name}</div><div class="pu-area">📍 ${e.area}</div><div class="pu-row"><span class="pu-lbl">Capacity Score</span><span class="pu-val" style="color:${c}">${e.capa.toLocaleString()}</span></div>${near?`<div class="pu-row"><span class="pu-lbl">Nearest Xiaomi</span><span class="pu-val">${near.name.substring(0,22)}… (${near.d.toFixed(1)}km)</span></div>`:''}<span class="pu-status ps-era" style="margin-top:7px;display:inline-flex;">📶 Erafone Active</span></div>`;}
+function ePop(e){const c=eraCol(e.capa);const tier=e.capa>=900?'Very High':e.capa>=600?'High':'Mid';const near=XS.filter(x=>x.type==='active'&&x.sub===e.sub).map(x=>({...x,d:hav(e.lat,e.lng,x.lat,x.lng)})).sort((a,b)=>a.d-b.d)[0];return`<div class="pu"><div class="pu-tag" style="color:${c}">Erafone · ${tier} Capacity</div><div class="pu-name">${e.name}</div><div class="pu-area">📍 ${e.area} &nbsp;${subBadge(e.sub)}</div><div class="pu-row"><span class="pu-lbl">Capacity Score</span><span class="pu-val" style="color:${c}">${e.capa.toLocaleString()}</span></div>${near?`<div class="pu-row"><span class="pu-lbl">Nearest Xiaomi (${e.sub})</span><span class="pu-val">${near.name.substring(0,20)}… (${near.d.toFixed(1)}km)</span></div>`:`<div class="pu-row"><span class="pu-lbl">Nearest Xiaomi (${e.sub})</span><span class="pu-val" style="color:var(--era-high)">None found</span></div>`}<span class="pu-status ps-era" style="margin-top:7px;display:inline-flex;">📶 Erafone Active</span>${mapLinks(e.lat,e.lng,e.addr)}</div>`;}
 
-function gPop(g){const c=g.priority==='high'?'var(--gap)':'var(--construction)';const near=XS.filter(x=>x.type==='active').map(x=>({...x,d:hav(g.e.lat,g.e.lng,x.lat,x.lng)})).sort((a,b)=>a.d-b.d)[0];return`<div class="pu"><div class="pu-tag" style="color:${c}">${g.priority==='high'?'🔴 HIGH':'🟡 PLANNED'} GAP ZONE</div><div class="pu-name">${g.e.name}</div><div class="pu-area">📍 ${g.e.area}</div><div class="pu-row"><span class="pu-lbl">Erafone Capa</span><span class="pu-val" style="color:${eraCol(g.e.capa)}">${g.e.capa.toLocaleString()}</span></div><div class="pu-row"><span class="pu-lbl">Cluster Capa (${curR}km)</span><span class="pu-val">${g.cc.toLocaleString()}</span></div><div class="pu-row"><span class="pu-lbl">Xiaomi within radius</span><span class="pu-val" style="color:var(--era-high)">None</span></div>${g.nc.length?`<div class="pu-row"><span class="pu-lbl">Construction nearby</span><span class="pu-val" style="color:var(--construction)">${g.nc.map(x=>x.name.substring(0,18)).join(', ')}</span></div>`:''}<span class="pu-status ps-gap" style="margin-top:7px;display:inline-flex;">🎯 Xiaomi Gap Zone</span></div>`;}
+function gPop(g){const c=g.priority==='high'?'var(--gap)':'var(--construction)';const near=XS.filter(x=>x.type==='active').map(x=>({...x,d:hav(g.e.lat,g.e.lng,x.lat,x.lng)})).sort((a,b)=>a.d-b.d)[0];const rule=g.e.sub==='street'?'no street-format Xiaomi within 2km':`no mall-format Xiaomi within ${g.effR}km`;return`<div class="pu"><div class="pu-tag" style="color:${c}">${g.priority==='high'?'🔴 HIGH':'🟡 PLANNED'} GAP ZONE</div><div class="pu-name">${g.e.name}</div><div class="pu-area">📍 ${g.e.area} &nbsp;${subBadge(g.e.sub)}</div><div class="pu-row"><span class="pu-lbl">Erafone Capa</span><span class="pu-val" style="color:${eraCol(g.e.capa)}">${g.e.capa.toLocaleString()}</span></div><div class="pu-row"><span class="pu-lbl">Cluster Capa (${g.effR}km)</span><span class="pu-val">${g.cc.toLocaleString()}</span></div><div class="pu-row"><span class="pu-lbl">Gap reason</span><span class="pu-val" style="color:var(--era-high)">${rule}</span></div>${near?`<div class="pu-row"><span class="pu-lbl">Closest Xiaomi (any format)</span><span class="pu-val">${near.name.substring(0,20)}… (${near.d.toFixed(1)}km)</span></div>`:''}${g.nc.length?`<div class="pu-row"><span class="pu-lbl">Construction nearby</span><span class="pu-val" style="color:var(--construction)">${g.nc.map(x=>x.name.substring(0,18)).join(', ')}</span></div>`:''}<span class="pu-status ps-gap" style="margin-top:7px;display:inline-flex;">🎯 Xiaomi Gap Zone</span>${mapLinks(g.e.lat,g.e.lng,g.e.addr)}</div>`;}
 
 // Add Xiaomi markers
-XS.forEach(s=>{
+function addXMarker(s){
   const m=L.marker([s.lat,s.lng],{icon:mkXIcon(s)}).bindPopup(xPop(s),{maxWidth:250}).on('click',()=>selItem('X'+s.id));
   LG[s.type].addLayer(m);MK['X'+s.id]=m;
-});
+}
 // Add Erafone markers + rings
-ES.forEach(e=>{
+function addEMarker(e){
   const m=L.marker([e.lat,e.lng],{icon:mkEIcon(e)}).bindPopup(ePop(e),{maxWidth:250}).on('click',()=>selItem(e.id));
   LG.erafone.addLayer(m);MK[e.id]=m;
   const ring=L.circle([e.lat,e.lng],{radius:curR*1000,color:eraCol(e.capa),fillColor:eraCol(e.capa),fillOpacity:.04,weight:1,dashArray:'4 4',opacity:.3});
   eraRings[e.id]=ring;LG.erafone.addLayer(ring);
-});
+}
 
 // ── GAP ANALYSIS ──
 function computeGaps(r){
-  return ES.filter(e=>e.capa>=400).map(e=>{
-    const na=XS.filter(x=>x.type==='active'&&hav(e.lat,e.lng,x.lat,x.lng)<=r);
-    const nc=XS.filter(x=>x.type==='construction'&&hav(e.lat,e.lng,x.lat,x.lng)<=r);
-    const ne=ES.filter(f=>f.id!==e.id&&hav(e.lat,e.lng,f.lat,f.lng)<=r*.5);
+  return ES.filter(e=>e.capa>=300).map(e=>{
+    const effR = e.sub==='street' ? 2 : r; // street-vs-street coverage is always checked at a fixed 2km; mall-vs-mall uses the slider radius
+    const na=XS.filter(x=>x.type==='active'&&x.sub===e.sub&&hav(e.lat,e.lng,x.lat,x.lng)<=effR);
+    const nc=XS.filter(x=>x.type==='construction'&&x.sub===e.sub&&hav(e.lat,e.lng,x.lat,x.lng)<=effR);
+    const ne=ES.filter(f=>f.id!==e.id&&hav(e.lat,e.lng,f.lat,f.lng)<=effR*.5);
     const cc=e.capa+ne.reduce((s,f)=>s+f.capa,0);
     const priority=na.length>0?null:nc.length>0?'medium':'high';
-    return priority?{e,na,nc,ne,cc,priority}:null;
+    return priority?{e,na,nc,ne,cc,priority,effR}:null;
   }).filter(Boolean).sort((a,b)=>b.cc-a.cc);
 }
 
@@ -400,7 +425,7 @@ function updateRadius(v){
   curR=parseFloat(v);document.getElementById('rVal').textContent=v+' km';
   ES.forEach(e=>{if(eraRings[e.id])eraRings[e.id].setRadius(curR*1000);});
   const gaps=computeGaps(curR);drawGapCircles(gaps,curR);buildGapPanel(gaps);
-  const hn=gaps.filter(g=>g.priority==='high').length;
+  const hn=gaps.length;
   document.getElementById('cG').textContent=hn;document.getElementById('mc-gap').textContent=hn;
 }
 
@@ -408,7 +433,7 @@ function updateRadius(v){
 function buildStoresPanel(){
   const act=XS.filter(s=>s.type==='active'),con=XS.filter(s=>s.type==='construction');
   let h=`<div class="cat-hdr"><div class="ch-dot" style="background:var(--orange)"></div><span class="ch-lbl">Active Stores</span><span class="ch-cnt">${act.length}</span></div>`;
-  act.forEach(s=>{h+=`<div class="si-item t-active" id="item-X${s.id}" onclick="selItem('X${s.id}')"><div class="si-icon" style="background:rgba(255,105,0,.1);border:1px solid rgba(255,105,0,.2);">🏪</div><div class="si-info"><div class="si-name">${s.name}</div><div class="si-sub"><span class="badge b-active">Active</span><span>${s.area}</span></div></div><div style="font-size:10px;font-weight:600;color:var(--text3);min-width:16px;text-align:right;margin-top:4px;">${s.id}</div></div>`;});
+  act.forEach(s=>{h+=`<div class="si-item t-active" id="item-X${s.id}" onclick="selItem('X${s.id}')"><div class="si-icon" style="background:rgba(255,105,0,.1);border:1px solid rgba(255,105,0,.2);">🏪</div><div class="si-info"><div class="si-name">${s.name}</div><div class="si-sub"><span class="badge b-active">Active</span><span>${s.area}</span>${s.gmv?`<span style="color:var(--orange);font-weight:600;">${fmtRp(s.gmv)}/mo</span>`:''}</div></div><div style="font-size:10px;font-weight:600;color:var(--text3);min-width:16px;text-align:right;margin-top:4px;">${s.id}</div></div>`;});
   h+=`<div class="sdiv"></div><div class="cat-hdr"><div class="ch-dot" style="background:var(--construction)"></div><span class="ch-lbl">Under Construction</span><span class="ch-cnt">${con.length}</span></div>`;
   con.forEach(s=>{h+=`<div class="si-item t-construction" id="item-X${s.id}" onclick="selItem('X${s.id}')"><div class="si-icon" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);">🔨</div><div class="si-info"><div class="si-name">${s.name}</div><div class="si-sub"><span class="badge b-construction">Construction</span><span>${s.area}</span></div></div><div style="font-size:10px;font-weight:600;color:var(--text3);min-width:16px;text-align:right;margin-top:4px;">${s.id}</div></div>`;});
   document.getElementById('panel-stores').innerHTML=h;
@@ -428,7 +453,7 @@ function buildGapPanel(gaps){
   const el=document.getElementById('panel-gaps');
   if(!gaps.length){el.innerHTML='<div style="padding:20px;font-size:12px;color:var(--text3);text-align:center;">No gap zones at this radius.<br>Try reducing the search radius.</div>';return;}
   const hi=gaps.filter(g=>g.priority==='high'),md=gaps.filter(g=>g.priority==='medium');
-  let h=`<div style="padding:8px 12px 4px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);">🎯 ${hi.length} Gap Zones · ${md.length} With Planned Coverage</div>`;
+  let h=`<div style="padding:8px 12px 4px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);">🎯 ${gaps.length} Total Gap Zones — ${hi.length} High Priority · ${md.length} Planned</div>`;
   if(hi.length){h+=`<div style="padding:4px 12px 2px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--era-high);">🔴 NO XIAOMI COVERAGE</div>`;hi.forEach((g,i)=>{h+=gcCard(g,i+1);});}
   if(md.length){h+=`<div style="padding:8px 12px 2px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--construction);">🟡 CONSTRUCTION PLANNED NEARBY</div>`;md.forEach((g,i)=>{h+=gcCard(g,hi.length+i+1);});}
   el.innerHTML=h;
@@ -438,10 +463,11 @@ function gcCard(g,rank){
   const col=g.priority==='high'?'var(--gap)':'var(--construction)';
   const pc=g.priority==='high'?'p-high':'p-med';
   const near=XS.filter(x=>x.type==='active').map(x=>({...x,d:hav(g.e.lat,g.e.lng,x.lat,x.lng)})).sort((a,b)=>a.d-b.d)[0];
+  const fmtNote=g.e.sub==='street'?'street-format (2km fixed radius)':`mall-format (${g.effR}km radius)`;
   const rec=g.priority==='high'
-    ?`<strong>Recommended:</strong> Open a new Xiaomi Authorized Store near <em>${g.e.name.replace(/^(ERAFONE|ERABLUE|MEGASTORE)\s/,'')}</em>. Erafone capa ${g.e.capa.toLocaleString()} signals strong buying power — currently uncaptured by Xiaomi within ${curR}km.`
+    ?`<strong>Recommended:</strong> Open a new Xiaomi Authorized Store near <em>${g.e.name.replace(/^(ERAFONE|ERABLUE|MEGASTORE)\s/,'')}</em>. Erafone capa ${g.e.capa.toLocaleString()} signals strong buying power — no ${fmtNote} Xiaomi currently captures this demand.`
     :`<strong>Construction underway:</strong> ${g.nc.map(x=>x.name).join(', ')} will serve this area once open.`;
-  return`<div class="gap-card"><div class="gc-hdr" onclick="this.nextElementSibling.classList.toggle('open');selItem('${g.e.id}')"><div class="gc-rank ${pc}">#${rank}</div><div><div class="gc-name">${g.e.name.replace(/^(ERAFONE|ERABLUE|MEGASTORE)\s/,'')}</div><div style="font-size:10px;color:var(--text3);margin-top:1px;">📍 ${g.e.area}</div></div><div class="gc-capa" style="color:${eraCol(g.e.capa)}">${g.e.capa.toLocaleString()}</div></div><div class="gc-body"><div class="gc-row"><span class="gc-lbl">Cluster Capa (${curR}km)</span><span class="gc-val">${g.cc.toLocaleString()}</span></div><div class="gc-row"><span class="gc-lbl">Other Era nearby</span><span class="gc-val">${g.ne.length>0?g.ne.map(f=>f.name.replace(/^(ERAFONE|ERABLUE|MEGASTORE)\s/,'').substring(0,20)).join(', '):'None'}</span></div><div class="gc-row"><span class="gc-lbl">Nearest Xiaomi Active</span><span class="gc-val">${near?near.name.substring(0,28)+' ('+near.d.toFixed(1)+'km)':'—'}</span></div>${g.nc.length?`<div class="gc-row"><span class="gc-lbl">Nearby Construction</span><span class="gc-val" style="color:var(--construction)">${g.nc.map(x=>x.name.substring(0,20)).join(', ')}</span></div>`:''}<div class="gc-rec">${rec}</div></div></div>`;
+  return`<div class="gap-card"><div class="gc-hdr" onclick="this.nextElementSibling.classList.toggle('open');selItem('${g.e.id}')"><div class="gc-rank ${pc}">#${rank}</div><div><div class="gc-name">${g.e.name.replace(/^(ERAFONE|ERABLUE|MEGASTORE)\s/,'')} ${subBadge(g.e.sub)}</div><div style="font-size:10px;color:var(--text3);margin-top:1px;">📍 ${g.e.area}</div></div><div class="gc-capa" style="color:${eraCol(g.e.capa)}">${g.e.capa.toLocaleString()}</div></div><div class="gc-body"><div class="gc-row"><span class="gc-lbl">Cluster Capa (${g.effR}km)</span><span class="gc-val">${g.cc.toLocaleString()}</span></div><div class="gc-row"><span class="gc-lbl">Other Era nearby</span><span class="gc-val">${g.ne.length>0?g.ne.map(f=>f.name.replace(/^(ERAFONE|ERABLUE|MEGASTORE)\s/,'').substring(0,20)).join(', '):'None'}</span></div><div class="gc-row"><span class="gc-lbl">Nearest Xiaomi Active</span><span class="gc-val">${near?near.name.substring(0,28)+' ('+near.d.toFixed(1)+'km)':'—'}</span></div>${g.nc.length?`<div class="gc-row"><span class="gc-lbl">Nearby Construction</span><span class="gc-val" style="color:var(--construction)">${g.nc.map(x=>x.name.substring(0,20)).join(', ')}</span></div>`:''}<div class="gc-rec">${rec}</div></div></div>`;
 }
 
 // ── INTERACTION ──
@@ -453,7 +479,6 @@ function selItem(id){
   if(MK[id]){const ll=MK[id].getLatLng();map.flyTo([ll.lat,ll.lng],14,{duration:.8});setTimeout(()=>MK[id].openPopup(),500);}
 }
 
-let curPanel='stores';
 function showPanel(id,btn){
   curPanel=id;
   document.querySelectorAll('.s-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
@@ -474,11 +499,19 @@ function filterSearch(q){
 }
 
 // ── BOOT ──
-buildStoresPanel();buildErafonePanel();
-const ig=computeGaps(curR);drawGapCircles(ig,curR);buildGapPanel(ig);
-const ihn=ig.filter(g=>g.priority==='high').length;
-document.getElementById('cG').textContent=ihn;document.getElementById('mc-gap').textContent=ihn;
-map.fitBounds([[-6.7,105.9],[-6.0,107.3]],{padding:[20,20]});
+window.onload=function(){
+  map=L.map('map',{center:[-6.25,106.82],zoom:10,zoomControl:false});
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:18}).addTo(map);
+  L.control.zoom({position:'bottomleft'}).addTo(map);
+  LG={active:L.layerGroup(),construction:L.layerGroup(),erafone:L.layerGroup(),gaps:L.layerGroup()};
+  Object.values(LG).forEach(g=>g.addTo(map));
+  buildStoresPanel();buildErafonePanel();
+  XS.forEach(addXMarker);ES.forEach(addEMarker);
+  const ig=computeGaps(curR);drawGapCircles(ig,curR);buildGapPanel(ig);
+  const ihn=ig.length;
+  document.getElementById('cG').textContent=ihn;document.getElementById('mc-gap').textContent=ihn;
+  map.fitBounds([[-6.7,105.9],[-6.0,107.3]],{padding:[20,20]});
+};
 
 // Fix panel show
 function showPanel(id,btn){
